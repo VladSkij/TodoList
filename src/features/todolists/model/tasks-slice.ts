@@ -34,6 +34,7 @@ export const tasksSlice = createAppSlice({
           return rejectWithValue(null)
         }
       },
+
       {
         fulfilled: (state, action) => {
           state[action.payload.newTask.todoListId].unshift(action.payload.newTask)
