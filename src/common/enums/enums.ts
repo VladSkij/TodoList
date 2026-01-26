@@ -15,6 +15,6 @@ export enum TaskPriority {
 
 export enum ResaultCode {
   Success = 0,
-  Error =1,
-  CaptchaError = 10
+  Error = 1,
+  CaptchaError = 10,
 }

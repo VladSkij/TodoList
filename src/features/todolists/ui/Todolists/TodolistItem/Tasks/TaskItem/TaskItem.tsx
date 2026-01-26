@@ -13,9 +13,10 @@ import type { DomainTask } from "@/features/todolists/api/tasksApi.types.ts"
 type Props = {
   task: DomainTask
   todolistId: string
+  disabled?: boolean
 }
 
-export const TaskItem = ({ task, todolistId }: Props) => {
+export const TaskItem = ({ task, todolistId, disabled }: Props) => {
   const dispatch = useAppDispatch()
 
   const deleteTask = () => {
@@ -42,10 +43,10 @@ export const TaskItem = ({ task, todolistId }: Props) => {
   return (
     <ListItem sx={getListItemSx(checked)}>
       <div>
-        <Checkbox checked={checked} onChange={changeTaskStatus} />
-        <EditableSpan value={task.title} onChange={changeTaskTitle} />
+        <Checkbox checked={checked} onChange={changeTaskStatus} disabled={disabled} />
+        <EditableSpan value={task.title} onChange={changeTaskTitle} disabled={disabled} />
       </div>
-      <IconButton onClick={deleteTask}>
+      <IconButton onClick={deleteTask} disabled={disabled}>
         <DeleteIcon />
       </IconButton>
     </ListItem>

@@ -34,7 +34,6 @@ export const tasksSlice = createAppSlice({
           return rejectWithValue(null)
         }
       },
-
       {
         fulfilled: (state, action) => {
           state[action.payload.newTask.todoListId].unshift(action.payload.newTask)
@@ -48,8 +47,8 @@ export const tasksSlice = createAppSlice({
           const res = await tasksApi.getTasks(todolistId)
           dispatch(setAppStatusAC({ status: "succeeded" }))
           return { todolistId, tasks: res.data.items }
-        } catch {
-          dispatch(setAppStatusAC({ status: "failed" }))
+        } catch (error) {
+          handleServerNetworkError(error, dispatch)
           return rejectWithValue(null)
         }
       },
@@ -60,12 +59,20 @@ export const tasksSlice = createAppSlice({
       },
     ),
     deleteTaskTC: create.asyncThunk(
-      async (payload: { todolistId: string; taskId: string }, thunkAPI) => {
+      async (payload: { todolistId: string; taskId: string }, { rejectWithValue, dispatch }) => {
         try {
-          await tasksApi.deleteTask(payload)
-          return payload
+          dispatch(setAppStatusAC({ status: "loading" }))
+          const res = await tasksApi.deleteTask(payload)
+          if(res.data.resultCode===ResaultCode.Success){
+            dispatch(setAppStatusAC({ status: "succeeded" }))
+            return payload
+          }else{
+            handleServerAppError(res.data, dispatch)
+            return rejectWithValue(null)
+          }
         } catch (err) {
-          return thunkAPI.rejectWithValue(null)
+          handleServerNetworkError(err, dispatch)
+          return rejectWithValue(null)
         }
       },
       {
