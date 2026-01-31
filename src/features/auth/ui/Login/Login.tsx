@@ -11,14 +11,19 @@ import Grid from "@mui/material/Grid2"
 import TextField from "@mui/material/TextField"
 import { useForm, SubmitHandler, Controller } from "react-hook-form"
 import s from "./Login.module.css"
+import { zodResolver } from "@hookform/resolvers/zod"
+import { loginSchema } from "@/features/auth/lib/schemas"
+import { LoginInputs } from "@/features/auth/lib/schemas/LoginSchema.ts"
 
 export const Login = () => {
 
-  type LoginInputs = {
-    email: string
-    password: string
-    rememberMe: boolean
-  }
+  // type LoginInputs = {
+  //   email: string
+  //   password: string
+  //   rememberMe: boolean
+  // }
+
+
 
   const themeMode = useAppSelector(selectThemeMode)
 
@@ -31,6 +36,7 @@ export const Login = () => {
     reset,
     control
   } = useForm <LoginInputs>({
+    resolver: zodResolver(loginSchema),
     defaultValues:{email:'test@gmail.com', password:'123456', rememberMe:true}
   })
 
@@ -68,19 +74,13 @@ export const Login = () => {
               helperText={errors.email && errors.email.message}
               margin="normal"
               error={!!errors.email}
-              {...register("email", {
-                required: { value: true, message: "Email can't be empty" },
-                pattern: {
-                  value: /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/,
-                  message: "Incorrect email address",
-                },
-              })}
+              {...register("email")}
             />
             <TextField
               type="password"
               label="Password"
               margin="normal"
-              error={!!errors.email}
+              error={!!errors.password}
               {...register("password", {
                 required: { value: true, message: "Password can't be empty" },
                 maxLength: { value: 6, message: "MaxValue is 6" },
