@@ -30,7 +30,7 @@ export const Login = () => {
   const theme = getTheme(themeMode)
 
   const {
-    register,
+
     handleSubmit,
     formState:{errors},
     reset,
@@ -69,23 +69,34 @@ export const Login = () => {
         </FormLabel>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
-            <TextField
-              label="Email"
-              helperText={errors.email && errors.email.message}
-              margin="normal"
-              error={!!errors.email}
-              {...register("email")}
+            <Controller
+              name="email"
+              control={control}
+              render={({ field}) => (
+                <TextField
+                  label="Email"
+                  helperText={errors.email && errors.email.message}
+                  margin="normal"
+                  {...field}
+                  error={!!errors.email}
+                />
+              )}
             />
-            <TextField
-              type="password"
-              label="Password"
-              margin="normal"
-              error={!!errors.password}
-              {...register("password", {
-                required: { value: true, message: "Password can't be empty" },
-                maxLength: { value: 6, message: "MaxValue is 6" },
-              })}
+            <Controller
+              name="password"
+              control={control}
+              render={({ field}) => (
+                <TextField
+                  type="password"
+                  helperText={errors.password && errors.password.message}
+                  label="Password"
+                  margin="normal"
+                  error={!!errors.password}
+                  {...field}
+                />
+              )}
             />
+
             {errors.password && <span className={s.errorMessage}>{errors.password.message}</span>}
             {/*<FormControlLabel label="Remember me" control={<Checkbox />} {...register("rememberMe")} />*/}
             <FormControlLabel
@@ -107,9 +118,7 @@ export const Login = () => {
                 <Controller
                   name="rememberMe"
                   control={control}
-                  render={({ field:{value, ...rest} }) => (
-                    <Checkbox {...rest} checked={value}/>
-                  )}
+                  render={({ field: { value, ...rest } }) => <Checkbox {...rest} checked={value} />}
                 />
               }
             />

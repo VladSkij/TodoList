@@ -1,11 +1,18 @@
-import { Todolist } from "@/features/todolists/api/todolistsApi.types.ts"
+// import type{ Todolist } from "@/features/todolists/api/todolistsApi.types.ts"
+
 import { todolistsApi } from "@/features/todolists/api/todolistsApi.ts"
 import { createAppSlice } from "@/common/utils"
 import { setAppStatusAC } from "@/app/app-slice.ts"
-import { RequestStatus } from "@/common/types"
+import { defaultResponseSchema, RequestStatus } from "@/common/types"
 import { handleServerNetworkError } from "@/common/utils/handleServerNetworkError.ts"
 import { ResaultCode } from "@/common/enums"
 import { handleServerAppError } from "@/common/utils/handleServerAppError.ts"
+
+import {
+  createTodolistResponseSchema,
+  Todolist,
+  todolistsApischema,
+} from "@/features/todolists/api/todolistsApi.types.ts"
 
 export const todolistsSlice = createAppSlice({
   name: "todolists",
@@ -34,18 +41,18 @@ export const todolistsSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await todolistsApi.getTodolists()
+          todolistsApischema.array().parse(res.data)
           dispatch(setAppStatusAC({ status: "succeeded" }))
-          return { todolists: res.data }
+          return { todolists:res.data }
         } catch (error) {
           handleServerNetworkError(error, dispatch)
           return rejectWithValue(null)
         }
       },
       {
-        fulfilled: (state, action) => {
-          action.payload?.todolists.forEach((tl) => {
-            state.push({ ...tl, filter: "all", entityStatus: "idle" })
-          })
+        fulfilled: (_state, action) => {
+          return action.payload?.todolists.map((tl) => ({ ...tl, filter: "all", entityStatus: "idle" })
+          )
         },
       },
     ),
@@ -54,6 +61,7 @@ export const todolistsSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await todolistsApi.changeTodolistTitle(payload)
+          defaultResponseSchema.parse(res.data)
           if (res.data.resultCode === ResaultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
           } else {
@@ -80,6 +88,7 @@ export const todolistsSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await todolistsApi.createTodolist(title)
+          createTodolistResponseSchema.parse(res.data)
           if (res.data.resultCode === ResaultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
             return res.data.data.item
@@ -105,6 +114,7 @@ export const todolistsSlice = createAppSlice({
           dispatch(setAppStatusAC({ status: "loading" }))
           dispatch(changeTodolistStatusAC({ id, entityStatus: "loading" }))
           const res = await todolistsApi.deleteTodolist(id)
+          defaultResponseSchema.parse(res.data)
           if (res.data.resultCode === ResaultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
             return { id }

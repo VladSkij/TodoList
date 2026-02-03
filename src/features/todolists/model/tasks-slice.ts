@@ -1,12 +1,18 @@
 import { createTodolistTC, deleteTodolistTC } from "./todolists-slice.ts"
 import { createAppSlice } from "@/common/utils"
 import { tasksApi } from "@/features/todolists/api/tasksApi.ts"
-import { DomainTask, domainTaskSchema, type UpdateTaskModel } from "@/features/todolists/api/tasksApi.types.ts"
+import {
+  DomainTask,
+  domainTaskSchema,
+  taskOperationResponseSchema,
+  type UpdateTaskModel,
+} from "@/features/todolists/api/tasksApi.types.ts"
 import { RootState } from "@/app/store.ts"
 import { setAppStatusAC } from "@/app/app-slice.ts"
 import { ResaultCode } from "@/common/enums"
 import { handleServerAppError } from "@/common/utils/handleServerAppError.ts"
 import { handleServerNetworkError } from "@/common/utils/handleServerNetworkError.ts"
+import { defaultResponseSchema } from "@/common/types"
 
 export const tasksSlice = createAppSlice({
   name: "tasks",
@@ -21,6 +27,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.createTask(payload)
+          taskOperationResponseSchema.parse(res.data)
           if (res.data.resultCode === ResaultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
             const newTask = res.data.data.item
@@ -64,6 +71,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.deleteTask(payload)
+          defaultResponseSchema.parse(res.data)
           if(res.data.resultCode===ResaultCode.Success){
             dispatch(setAppStatusAC({ status: "succeeded" }))
             return payload
@@ -93,10 +101,8 @@ export const tasksSlice = createAppSlice({
         { dispatch, getState, rejectWithValue },
       ) => {
         const { todolistId, taskId, domainModel } = payload
-
         const allTodoListTasks = (getState() as RootState).tasks[todolistId]
         const task = allTodoListTasks.find((task) => task.id === taskId)
-
         if (!task) {
           return rejectWithValue(null)
         }
@@ -113,6 +119,7 @@ export const tasksSlice = createAppSlice({
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await tasksApi.updateTask({ todolistId, taskId, model })
+          taskOperationResponseSchema.parse(res.data)
           if (res.data.resultCode === ResaultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
             return { task: res.data.data.item }

@@ -14,7 +14,7 @@ type Props = {
 }
 
 export const TodolistTitle = ({ todolist }: Props) => {
-  const { id, title, entityStatus } = todolist
+  const { id, title, entityStatus, addedDate } = todolist
 
   const dispatch = useAppDispatch()
 
@@ -33,6 +33,7 @@ export const TodolistTitle = ({ todolist }: Props) => {
       <h3>
         <EditableSpan value={title} onChange={changeTodolistTitle} disabled={disabled} />
       </h3>
+      <span>{new Date(addedDate).toLocaleDateString()}</span>
       <IconButton onClick={deleteTodolist} disabled={disabled}>
         <DeleteIcon />
       </IconButton>
