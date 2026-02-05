@@ -1,5 +1,5 @@
 import { selectThemeMode } from "@/app/app-slice"
-import { useAppSelector } from "@/common/hooks"
+import { useAppDispatch, useAppSelector } from "@/common/hooks"
 import { getTheme } from "@/common/theme"
 import Button from "@mui/material/Button"
 import Checkbox from "@mui/material/Checkbox"
@@ -9,41 +9,69 @@ import FormGroup from "@mui/material/FormGroup"
 import FormLabel from "@mui/material/FormLabel"
 import Grid from "@mui/material/Grid2"
 import TextField from "@mui/material/TextField"
-import { useForm, SubmitHandler, Controller } from "react-hook-form"
+import { Controller, SubmitHandler, useForm } from "react-hook-form"
 import s from "./Login.module.css"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/features/auth/lib/schemas"
 import { LoginInputs } from "@/features/auth/lib/schemas/LoginSchema.ts"
+import { loginTC, selectIsLoggedIn } from "@/features/auth/model/auth-slice.ts"
+import { Navigate } from "react-router"
+import { Path } from "@/common/routing/Routing.tsx"
 
 export const Login = () => {
-
-  // type LoginInputs = {
-  //   email: string
-  //   password: string
-  //   rememberMe: boolean
-  // }
-
-
-
   const themeMode = useAppSelector(selectThemeMode)
-
+  const isLoggedIn = useAppSelector(selectIsLoggedIn)
   const theme = getTheme(themeMode)
+  const dispatch = useAppDispatch()
 
   const {
-
     handleSubmit,
-    formState:{errors},
-    reset,
-    control
-  } = useForm <LoginInputs>({
+    formState: { errors },
+    //reset,
+    control,
+  } = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
-    defaultValues:{email:'test@gmail.com', password:'123456', rememberMe:true}
+    defaultValues: { email: "free@samuraijs.com", password: "free", rememberMe: true },
   })
 
   const onSubmit: SubmitHandler<LoginInputs> = (data) => {
-    console.log(data)
-    reset()
+    dispatch(loginTC(data))
+    // reset()
   }
+
+  // const navigate = useNavigate()
+  // if(isLoggedIn) {
+  //   navigate(Path.Main)
+  // }
+
+  //var 1
+  // const navigate = useNavigate()
+  // useEffect(() => {
+  //   if (isLoggedIn) {
+  //      navigate(Path.Main)
+  //   }
+  // },[isLoggedIn])
+
+  //var2
+  if (isLoggedIn) {
+    return <Navigate to={Path.Main} />
+  }
+
+  //var3
+  // const navigate = useNavigate()
+  // const onSubmit: SubmitHandler<LoginInputs> = (data) => {
+  //   dispatch(loginTC(data))
+  //     .unwrap()
+  //     .then((res)=>{
+  //       debugger
+  //       navigate(Path.Main)
+  //     })
+  //     .catch((err)=>{
+  //       debugger
+  //     })
+  //   // reset()
+  // }
+
   return (
     <Grid container justifyContent={"center"}>
       <FormControl>
@@ -72,7 +100,7 @@ export const Login = () => {
             <Controller
               name="email"
               control={control}
-              render={({ field}) => (
+              render={({ field }) => (
                 <TextField
                   label="Email"
                   helperText={errors.email && errors.email.message}
@@ -85,7 +113,7 @@ export const Login = () => {
             <Controller
               name="password"
               control={control}
-              render={({ field}) => (
+              render={({ field }) => (
                 <TextField
                   type="password"
                   helperText={errors.password && errors.password.message}
@@ -112,16 +140,16 @@ export const Login = () => {
               }
             />
 
-            <FormControlLabel
-              label="Remember me"
-              control={
-                <Controller
-                  name="rememberMe"
-                  control={control}
-                  render={({ field: { value, ...rest } }) => <Checkbox {...rest} checked={value} />}
-                />
-              }
-            />
+            {/*<FormControlLabel*/}
+            {/*  label="Remember me"*/}
+            {/*  control={*/}
+            {/*    <Controller*/}
+            {/*      name="rememberMe"*/}
+            {/*      control={control}*/}
+            {/*      render={({ field: { value, ...rest } }) => <Checkbox {...rest} checked={value} />}*/}
+            {/*    />*/}
+            {/*  }*/}
+            {/*/>*/}
 
             <Button type="submit" variant="contained" color="primary">
               Login

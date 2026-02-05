@@ -4,8 +4,12 @@ import { z } from "zod"
 
 export const loginSchema = z.object({
   email: z.email({ error: "Incorrect email address" }),
-  password: z.string().min(7, "Password must be at least 7 characters"),
-  rememberMe: z.boolean(),
+  password: z
+    .string()
+    .min(1, { error: "Password is required" })
+    .min(3, { error: "Password must be at least 3 characters long" }),
+  rememberMe: z.boolean().optional(),
+  captcha: z.string().optional(),
 })
 
 
