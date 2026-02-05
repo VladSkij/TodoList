@@ -6,7 +6,6 @@ type Props = {
   isAllowed: boolean
   redirectPath: string
 }
-
 export const ProtectedRoute = ({ children, isAllowed, redirectPath }: Props) => {
   if (!isAllowed) {
     return <Navigate to={redirectPath} />
