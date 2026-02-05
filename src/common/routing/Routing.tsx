@@ -18,32 +18,43 @@ export const Routing = () => {
   const isLoggedIn = useSelector(selectIsLoggedIn)
   return (
     <Routes>
-      <Route
-        path={Path.Main}
-        element={
-          <ProtectedRoute isAllowed={isLoggedIn} redirectPath={Path.Login}>
-            <Main />
-          </ProtectedRoute>
-        }
-      />
+      <Route element={<ProtectedRoute isAllowed={isLoggedIn} redirectPath={Path.Login} />}>
+        <Route path={Path.Main} element={<Main />} />
+        <Route path={Path.Faq} element={<Faq />} />
+      </Route>
 
-      <Route
-        path={Path.Login}
-        element={
-          <ProtectedRoute isAllowed={!isLoggedIn} redirectPath={Path.Login}>
-            <Login />
-          </ProtectedRoute>
-        }
-      />
+      <Route element={<ProtectedRoute isAllowed={!isLoggedIn} redirectPath={Path.Main} />}>
+        <Route path={Path.Login} element={<Login />} />
+      </Route>
+
+
       <Route path={Path.notFound} element={<PageNotFound />} />
-      <Route
-        path={Path.Faq}
-        element={
-          <ProtectedRoute isAllowed={isLoggedIn} redirectPath={Path.Login}>
-            <Faq />
-          </ProtectedRoute>
-        }
-      ></Route>
     </Routes>
   )
 }
+
+// <Route
+//   path={Path.Main}
+//   element={
+//     <ProtectedRoute isAllowed={isLoggedIn} redirectPath={Path.Login}>
+//       <Main />
+//     </ProtectedRoute>
+//   }
+// />
+//
+// <Route
+//   path={Path.Faq}
+//   element={
+//     <ProtectedRoute isAllowed={isLoggedIn} redirectPath={Path.Login}>
+//       <Faq />
+//     </ProtectedRoute>
+//   }
+// />
+// <Route
+//   path={Path.Login}
+//   element={
+//     <ProtectedRoute isAllowed={!isLoggedIn} redirectPath={Path.Login}>
+//       <Login />
+//     </ProtectedRoute>
+//   }
+// />
