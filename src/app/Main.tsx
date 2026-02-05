@@ -1,24 +1,15 @@
-import { useAppDispatch, useAppSelector } from "@/common/hooks"
+import { useAppDispatch } from "@/common/hooks"
 import { CreateItemForm } from "@/common/components/CreateItemForm/CreateItemForm"
 import { Todolists } from "@/features/todolists/ui/Todolists/Todolists"
 import Container from "@mui/material/Container"
 import Grid from "@mui/material/Grid2"
 import { createTodolistTC } from "@/features/todolists/model/todolists-slice.ts"
-import { Navigate } from "react-router"
-import { Path } from "@/common/routing/Routing.tsx"
-import { selectIsLoggedIn } from "@/features/auth/model/auth-slice.ts"
 
 export const Main = () => {
   const dispatch = useAppDispatch()
 
   const createTodolist = (title: string) => {
     dispatch(createTodolistTC(title))
-  }
-
-  const isLoggedIn = useAppSelector(selectIsLoggedIn)
-
-  if (!isLoggedIn) {
-    return <Navigate to={Path.Login} />
   }
 
   return (
