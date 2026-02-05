@@ -38,7 +38,6 @@ export const Login = () => {
     dispatch(loginTC(data))
     // reset()
   }
-
   // const navigate = useNavigate()
   // if(isLoggedIn) {
   //   navigate(Path.Main)
