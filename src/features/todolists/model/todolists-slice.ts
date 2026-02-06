@@ -13,6 +13,7 @@ import {
   Todolist,
   todolistsApischema,
 } from "@/features/todolists/api/todolistsApi.types.ts"
+import { clearDataAC } from "@/common/actions"
 
 export const todolistsSlice = createAppSlice({
   name: "todolists",
@@ -43,7 +44,7 @@ export const todolistsSlice = createAppSlice({
           const res = await todolistsApi.getTodolists()
           todolistsApischema.array().parse(res.data)
           dispatch(setAppStatusAC({ status: "succeeded" }))
-          return { todolists:res.data }
+          return { todolists: res.data }
         } catch (error) {
           handleServerNetworkError(error, dispatch)
           return rejectWithValue(null)
@@ -51,8 +52,7 @@ export const todolistsSlice = createAppSlice({
       },
       {
         fulfilled: (_state, action) => {
-          return action.payload?.todolists.map((tl) => ({ ...tl, filter: "all", entityStatus: "idle" })
-          )
+          return action.payload?.todolists.map((tl) => ({ ...tl, filter: "all", entityStatus: "idle" }))
         },
       },
     ),
@@ -118,12 +118,12 @@ export const todolistsSlice = createAppSlice({
           if (res.data.resultCode === ResaultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
             return { id }
-          }else{
+          } else {
             dispatch(changeTodolistStatusAC({ id, entityStatus: "failed" }))
             handleServerAppError(res.data, dispatch)
             return rejectWithValue(null)
           }
-        } catch(err) {
+        } catch (err) {
           dispatch(changeTodolistStatusAC({ id, entityStatus: "failed" }))
           handleServerNetworkError(err, dispatch)
           return rejectWithValue(null)
@@ -139,6 +139,9 @@ export const todolistsSlice = createAppSlice({
       },
     ),
   }),
+  extraReducers: (builder) => {
+    builder.addCase(clearDataAC, () => [])
+  },
 })
 
 export const todolistsReducer = todolistsSlice.reducer

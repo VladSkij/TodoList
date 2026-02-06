@@ -6,6 +6,7 @@ import { handleServerAppError } from "@/common/utils/handleServerAppError.ts"
 import { handleServerNetworkError } from "@/common/utils/handleServerNetworkError.ts"
 import { authApi } from "@/features/auth/api/authApi.ts"
 import { AUTH_TOKEN } from "@/common/constants"
+import { clearDataAC } from "@/common/actions"
 
 export const authSlice = createAppSlice({
   name: "auth",
@@ -71,6 +72,7 @@ export const authSlice = createAppSlice({
           const res = await authApi.me()
           if (res.data.resultCode === ResaultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
+            dispatch(clearDataAC())
             return { isLoggedIn: true }
           } else {
             handleServerAppError(res.data, dispatch)

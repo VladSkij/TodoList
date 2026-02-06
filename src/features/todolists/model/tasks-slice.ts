@@ -13,10 +13,14 @@ import { ResaultCode } from "@/common/enums"
 import { handleServerAppError } from "@/common/utils/handleServerAppError.ts"
 import { handleServerNetworkError } from "@/common/utils/handleServerNetworkError.ts"
 import { defaultResponseSchema } from "@/common/types"
+import { clearDataAC } from "@/common/actions"
+import { current } from "@reduxjs/toolkit"
+
+
 
 export const tasksSlice = createAppSlice({
   name: "tasks",
-  initialState: {} as TasksState,
+  initialState:{} as TasksState,
   selectors: {
     selectTasks: (state) => state,
   },
@@ -147,11 +151,13 @@ export const tasksSlice = createAppSlice({
   extraReducers: (builder) => {
     builder
       .addCase(createTodolistTC.fulfilled, (state, action) => {
+        console.log(current(state))
         state[action.payload.id] = []
       })
       .addCase(deleteTodolistTC.fulfilled, (state, action) => {
         delete state[action.payload.id]
       })
+      .addCase(clearDataAC, () => {})
   },
 })
 
