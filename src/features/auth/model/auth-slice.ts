@@ -8,24 +8,29 @@ import { authApi } from "@/features/auth/api/authApi.ts"
 import { AUTH_TOKEN } from "@/common/constants"
 import { clearDataAC } from "@/common/actions"
 
+
+
 export const authSlice = createAppSlice({
   name: "auth",
   initialState: {
     isLoggedIn: false,
+    nickname: localStorage.getItem("email") as string | null,
   },
   selectors: {
     selectIsLoggedIn: (state) => state.isLoggedIn,
+    selectNickname: (state) => state.nickname,
   },
   reducers: (create) => ({
     loginTC: create.asyncThunk(
       async (data: LoginInputs, { dispatch, rejectWithValue }) => {
+        const { email } = data
         try {
           dispatch(setAppStatusAC({ status: "loading" }))
           const res = await authApi.login(data)
           if (res.data.resultCode === ResaultCode.Success) {
             dispatch(setAppStatusAC({ status: "succeeded" }))
             localStorage.setItem(AUTH_TOKEN, res.data.data.token)
-            return { isLoggedIn: true }
+            return { isLoggedIn: true, email }
           } else {
             handleServerAppError(res.data, dispatch)
             return rejectWithValue(null)
@@ -38,6 +43,8 @@ export const authSlice = createAppSlice({
       {
         fulfilled: (state, action) => {
           state.isLoggedIn = action.payload.isLoggedIn
+          state.nickname = action.payload.email
+          localStorage.setItem("email", action.payload.email)
         },
       },
     ),
@@ -62,6 +69,8 @@ export const authSlice = createAppSlice({
       {
         fulfilled: (state, action) => {
           state.isLoggedIn = action.payload.isLoggedIn
+          localStorage.removeItem("email")
+          state.nickname = null
         },
       },
     ),
@@ -92,6 +101,6 @@ export const authSlice = createAppSlice({
   }),
 })
 
-export const { selectIsLoggedIn } = authSlice.selectors
+export const { selectIsLoggedIn, selectNickname } = authSlice.selectors
 export const authReducer = authSlice.reducer
 export const { loginTC, logoutTC, meTC } = authSlice.actions

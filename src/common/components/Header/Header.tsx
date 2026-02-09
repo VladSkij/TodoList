@@ -10,7 +10,7 @@ import IconButton from "@mui/material/IconButton"
 import Switch from "@mui/material/Switch"
 import Toolbar from "@mui/material/Toolbar"
 import { LinearProgress } from "@mui/material"
-import { logoutTC, selectIsLoggedIn } from "@/features/auth/model/auth-slice.ts"
+import { logoutTC, selectIsLoggedIn, selectNickname } from "@/features/auth/model/auth-slice.ts"
 import { NavLink } from "react-router"
 import { Path } from "@/common/routing/Routing.tsx"
 
@@ -20,6 +20,8 @@ export const Header = () => {
   const theme = getTheme(themeMode)
   const status = useAppSelector(selectAppStatus)
   const isLoggedIn = useAppSelector(selectIsLoggedIn)
+  const email = useAppSelector(selectNickname)
+  const nickname = email ? email.split("@")[0] : ""
 
   const changeMode = () => {
     dispatch(changeThemeModeAC({ themeMode: themeMode === "light" ? "dark" : "light" }))
@@ -36,9 +38,14 @@ export const Header = () => {
           <IconButton color="inherit">
             <MenuIcon />
           </IconButton>
-          <div>
-            <NavLink style={{ color: "white", paddingLeft: "20px" }} to={Path.Main}>Main</NavLink>
-            <NavLink style={{ color: "white", paddingLeft: "20px" }} to={Path.Faq}>FAQ</NavLink>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            {isLoggedIn && <div>{nickname}</div>}
+            <NavLink style={{ color: "white", paddingLeft: "20px" }} to={Path.Main}>
+              Main
+            </NavLink>
+            <NavLink style={{ color: "white", paddingLeft: "20px" }} to={Path.Faq}>
+              FAQ
+            </NavLink>
             {isLoggedIn && <NavButton onClick={logoutHandler}>Log out</NavButton>}
             <NavButton background={theme.palette.primary.dark}>Faq</NavButton>
             <Switch color={"default"} onChange={changeMode} />
