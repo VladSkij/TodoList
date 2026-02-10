@@ -12,7 +12,7 @@ export const Todolists = () => {
 
   const { data: todolists } = useGetTodolistsQuery()
   // const res = useGetTodolistsQuery()
-  // console.log(res)
+  // console.log(res.da)
   return (
     <>
       {todolists?.map((todolist) => (
