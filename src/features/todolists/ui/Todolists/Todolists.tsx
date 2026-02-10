@@ -1,19 +1,20 @@
 import { TodolistItem } from "./TodolistItem/TodolistItem"
 import Grid from "@mui/material/Grid2"
 import Paper from "@mui/material/Paper"
-import { useGetTodolistsQuery } from "@/features/todolists/api/todolistsApi.ts"
+import { useGetTodolistsQuery, useLazyGetTodolistsQuery } from "@/features/todolists/api/todolistsApi.ts"
 import Button from "@mui/material/Button"
 import { useState } from "react"
 
 export const Todolists = () => {
 
-  const [skip, setSkip] = useState(true)
 
-  const { data: todolists } = useGetTodolistsQuery(undefined, {skip})
+  // const { data: todolists } = useGetTodolistsQuery(undefined, {skip})
+  const [trigger, { data: todolists }] = useLazyGetTodolistsQuery()
 
-  const getTodosHandler = ()=>{
-    setSkip(false)
+  const getTodosHandler = () =>{
+    trigger()
   }
+
   return (
     <>
       <div>
