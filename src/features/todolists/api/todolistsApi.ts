@@ -23,6 +23,7 @@ export const _todolistsApi = {
 
 export const todolistsApi = createApi({
   reducerPath: "todolistsApi",
+  tagTypes: ["Todolist"],
   baseQuery: fetchBaseQuery({
     baseUrl: import.meta.env.VITE_BASE_URL,
     headers: {
@@ -38,6 +39,7 @@ export const todolistsApi = createApi({
       transformResponse(todolists: Todolist[]) {
         return todolists.map((tl) => ({ ...tl, filter: "all", entityStatus: "idle" }))
       },
+      providesTags: ["Todolist"],
     }),
     createTodolist: build.mutation<BaseResponse<{ item: Todolist }>, string>({
       query: (title) => ({
@@ -45,6 +47,7 @@ export const todolistsApi = createApi({
         method: "post",
         body: { title },
       }),
+      invalidatesTags: ["Todolist"],
     }),
     changeTodolistTitle: build.mutation<BaseResponse, { id: string; title: string }>({
       query: ({ id, title }) => ({
@@ -52,12 +55,14 @@ export const todolistsApi = createApi({
         method: "put",
         body: { id, title },
       }),
+      invalidatesTags: ["Todolist"],
     }),
     deleteTodolist: build.mutation<BaseResponse, string>({
       query: (id) => ({
         url: `/todo-lists/${id}`,
         method: "delete",
       }),
+      invalidatesTags: ["Todolist"],
     }),
   }),
 })

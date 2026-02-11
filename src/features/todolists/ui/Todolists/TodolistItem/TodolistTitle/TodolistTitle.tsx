@@ -11,7 +11,6 @@ type Props = {
 
 export const TodolistTitle = ({ todolist }: Props) => {
   const { id, title, entityStatus, addedDate } = todolist
-
   const [changeTodolistTitle] = useChangeTodolistTitleMutation()
   const [deleteTodolist] = useDeleteTodolistMutation()
 
