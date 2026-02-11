@@ -1,5 +1,5 @@
 import { instance } from "@/common/instance"
-import { DeafultResponse } from "@/common/types"
+import { BaseResponse, DeafultResponse } from "@/common/types"
 import type { CreateTodolistResponse, Todolist } from "./todolistsApi.types"
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react"
 import { AUTH_TOKEN } from "@/common/constants"
@@ -14,7 +14,7 @@ export const _todolistsApi = {
     return instance.put<DeafultResponse>(`/todo-lists/${id}`, { title })
   },
   createTodolist(title: string) {
-    return instance.post<CreateTodolistResponse>("/todo-lists", { title })
+    return instance.post<BaseResponse<{item:Todolist}>>("/todo-lists", { title })
   },
   deleteTodolist(id: string) {
     return instance.delete<DeafultResponse>(`/todo-lists/${id}`)
@@ -32,14 +32,21 @@ export const todolistsApi = createApi({
       headers.set("Authorization", `Bearer ${localStorage.getItem(AUTH_TOKEN)}`)
     },
   }),
-  endpoints: (builder) => ({
-      getTodolists: builder.query<DomainTodolist[], void>({
-        query: () => "/todo-lists",
-        transformResponse(todolists: Todolist[]) {
-          return todolists.map((tl) => ({ ...tl, filter: "all", entityStatus: "idle" }))
-        },
+  endpoints: (build) => ({
+    getTodolists: build.query<DomainTodolist[], void>({
+      query: () => "/todo-lists",
+      transformResponse(todolists: Todolist[]) {
+        return todolists.map((tl) => ({ ...tl, filter: "all", entityStatus: "idle" }))
+      },
+    }),
+    createTodolist: build.mutation<BaseResponse<{ item: Todolist }>, string>({
+      query: (title) => ({
+        url: "/todo-lists",
+        method: "post",
+        body: { title },
       }),
+    }),
   }),
 })
 
-export const { useGetTodolistsQuery, useLazyGetTodolistsQuery } = todolistsApi
+export const { useGetTodolistsQuery, useCreateTodolistMutation} = todolistsApi
