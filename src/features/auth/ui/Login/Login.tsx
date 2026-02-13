@@ -18,14 +18,13 @@ import { loginTC } from "@/features/auth/model/auth-slice.ts"
 
 export const Login = () => {
   const themeMode = useAppSelector(selectThemeMode)
-  // const isLoggedIn = useAppSelector(selectIsLoggedIn)
   const theme = getTheme(themeMode)
   const dispatch = useAppDispatch()
 
   const {
     handleSubmit,
     formState: { errors },
-    //reset,
+    reset,
     control,
   } = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
@@ -34,7 +33,7 @@ export const Login = () => {
 
   const onSubmit: SubmitHandler<LoginInputs> = (data) => {
     dispatch(loginTC(data))
-    // reset()
+    reset()
   }
   // const navigate = useNavigate()
   // if(isLoggedIn) {
