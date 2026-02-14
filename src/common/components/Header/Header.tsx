@@ -10,9 +10,13 @@ import IconButton from "@mui/material/IconButton"
 import Switch from "@mui/material/Switch"
 import Toolbar from "@mui/material/Toolbar"
 import { LinearProgress } from "@mui/material"
-import { logoutTC, selectIsLoggedIn, selectNickname } from "@/features/auth/model/auth-slice.ts"
+import { selectIsLoggedIn, selectNickname, setIsLoggedInAC } from "@/features/auth/model/auth-slice.ts"
 import { NavLink } from "react-router"
 import { Path } from "@/common/routing/Routing.tsx"
+import { useLogoutMutation } from "@/features/auth/api/authApi.ts"
+import { ResaultCode } from "@/common/enums"
+import { AUTH_TOKEN, EMAIL } from "@/common/constants"
+import { clearDataAC } from "@/common/actions"
 
 export const Header = () => {
   const themeMode = useAppSelector(selectThemeMode)
@@ -26,9 +30,17 @@ export const Header = () => {
   const changeMode = () => {
     dispatch(changeThemeModeAC({ themeMode: themeMode === "light" ? "dark" : "light" }))
   }
+  const [logout] = useLogoutMutation()
 
   const logoutHandler = () => {
-    dispatch(logoutTC())
+    logout().then((res) => {
+      if (res.data?.resultCode === ResaultCode.Success) {
+        dispatch(setIsLoggedInAC({ isLoggedIn: false }))
+        localStorage.removeItem(AUTH_TOKEN)
+        localStorage.removeItem(EMAIL)
+        dispatch(clearDataAC())
+      }
+    })
   }
 
   return (

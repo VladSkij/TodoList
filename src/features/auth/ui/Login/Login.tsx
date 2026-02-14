@@ -14,12 +14,16 @@ import s from "./Login.module.css"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/features/auth/lib/schemas"
 import { LoginInputs } from "@/features/auth/lib/schemas/LoginSchema.ts"
-import { loginTC } from "@/features/auth/model/auth-slice.ts"
+import { setIsLoggedInAC } from "@/features/auth/model/auth-slice.ts"
+import { useLoginMutation } from "@/features/auth/api/authApi.ts"
+import { ResaultCode } from "@/common/enums"
+import { AUTH_TOKEN, EMAIL } from "@/common/constants"
 
 export const Login = () => {
   const themeMode = useAppSelector(selectThemeMode)
   const theme = getTheme(themeMode)
   const dispatch = useAppDispatch()
+  const [login] = useLoginMutation()
 
   const {
     handleSubmit,
@@ -32,41 +36,17 @@ export const Login = () => {
   })
 
   const onSubmit: SubmitHandler<LoginInputs> = (data) => {
-    dispatch(loginTC(data))
+    login(data).then((res) => {
+      console.log(data)
+      if (res.data?.resultCode === ResaultCode.Success) {
+        dispatch(setIsLoggedInAC({ isLoggedIn: true }))
+        localStorage.setItem(AUTH_TOKEN, res.data.data.token)
+        localStorage.setItem(EMAIL, data.email)
+      }
+    })
+
     reset()
   }
-  // const navigate = useNavigate()
-  // if(isLoggedIn) {
-  //   navigate(Path.Main)
-  // }
-
-  //var 1
-  // const navigate = useNavigate()
-  // useEffect(() => {
-  //   if (isLoggedIn) {
-  //      navigate(Path.Main)
-  //   }
-  // },[isLoggedIn])
-
-  //var2
-  // if (isLoggedIn) {
-  //   return <Navigate to={Path.Main} />
-  // }
-
-  //var3
-  // const navigate = useNavigate()
-  // const onSubmit: SubmitHandler<LoginInputs> = (data) => {
-  //   dispatch(loginTC(data))
-  //     .unwrap()
-  //     .then((res)=>{
-  //       debugger
-  //       navigate(Path.Main)
-  //     })
-  //     .catch((err)=>{
-  //       debugger
-  //     })
-  //   // reset()
-  // }
 
   return (
     <Grid container justifyContent={"center"}>

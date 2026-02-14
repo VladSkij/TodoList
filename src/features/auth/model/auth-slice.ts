@@ -21,6 +21,7 @@ export const authSlice = createAppSlice({
     selectNickname: (state) => state.nickname,
   },
   reducers: (create) => ({
+
     setIsLoggedInAC: create.reducer<{ isLoggedIn:boolean }>((state, action) => {
       state.isLoggedIn = action.payload.isLoggedIn
     }),
@@ -48,7 +49,7 @@ export const authSlice = createAppSlice({
         fulfilled: (state, action) => {
           state.isLoggedIn = action.payload.isLoggedIn
           state.nickname = action.payload.email
-          localStorage.setItem("email", action.payload.email)
+          // localStorage.setItem("email", action.payload.email)
         },
       },
     ),
