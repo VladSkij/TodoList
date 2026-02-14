@@ -1,4 +1,11 @@
-import { changeThemeModeAC, selectAppStatus, selectThemeMode } from "@/app/app-slice.ts"
+import {
+  changeThemeModeAC,
+  selectAppStatus,
+  selectIsLoggedIn,
+  selectNickname,
+  selectThemeMode,
+  setIsLoggedInAC,
+} from "@/app/app-slice.ts"
 import { useAppDispatch, useAppSelector } from "@/common/hooks"
 import { containerSx } from "@/common/styles"
 import { getTheme } from "@/common/theme"
@@ -10,7 +17,6 @@ import IconButton from "@mui/material/IconButton"
 import Switch from "@mui/material/Switch"
 import Toolbar from "@mui/material/Toolbar"
 import { LinearProgress } from "@mui/material"
-import { selectIsLoggedIn, selectNickname, setIsLoggedInAC } from "@/features/auth/model/auth-slice.ts"
 import { NavLink } from "react-router"
 import { Path } from "@/common/routing/Routing.tsx"
 import { useLogoutMutation } from "@/features/auth/api/authApi.ts"
@@ -33,8 +39,9 @@ export const Header = () => {
   const [logout] = useLogoutMutation()
 
   const logoutHandler = () => {
-    logout().then((res) => {
-      if (res.data?.resultCode === ResaultCode.Success) {
+    logout().unwrap()
+      .then((res) => {
+      if (res.resultCode === ResaultCode.Success) {
         dispatch(setIsLoggedInAC({ isLoggedIn: false }))
         localStorage.removeItem(AUTH_TOKEN)
         localStorage.removeItem(EMAIL)

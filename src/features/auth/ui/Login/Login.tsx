@@ -1,4 +1,4 @@
-import { selectThemeMode } from "@/app/app-slice"
+import { selectThemeMode, setIsLoggedInAC } from "@/app/app-slice"
 import { useAppDispatch, useAppSelector } from "@/common/hooks"
 import { getTheme } from "@/common/theme"
 import Button from "@mui/material/Button"
@@ -14,11 +14,9 @@ import s from "./Login.module.css"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/features/auth/lib/schemas"
 import { LoginInputs } from "@/features/auth/lib/schemas/LoginSchema.ts"
-import { setIsLoggedInAC } from "@/features/auth/model/auth-slice.ts"
 import { useLoginMutation } from "@/features/auth/api/authApi.ts"
 import { ResaultCode } from "@/common/enums"
 import { AUTH_TOKEN, EMAIL } from "@/common/constants"
-
 export const Login = () => {
   const themeMode = useAppSelector(selectThemeMode)
   const theme = getTheme(themeMode)
@@ -36,11 +34,12 @@ export const Login = () => {
   })
 
   const onSubmit: SubmitHandler<LoginInputs> = (data) => {
-    login(data).then((res) => {
-      console.log(data)
-      if (res.data?.resultCode === ResaultCode.Success) {
+    login(data)
+      .unwrap()
+      .then((res) => {
+      if (res.resultCode === ResaultCode.Success) {
         dispatch(setIsLoggedInAC({ isLoggedIn: true }))
-        localStorage.setItem(AUTH_TOKEN, res.data.data.token)
+        localStorage.setItem(AUTH_TOKEN, res.data.token)
         localStorage.setItem(EMAIL, data.email)
       }
     })
