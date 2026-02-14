@@ -5,7 +5,7 @@ import { PageNotFound } from "@/common/components/PageNotFound/PageNotFound.tsx"
 import { Faq } from "@/common/components/Faq/Faq.tsx"
 import { ProtectedRoute } from "@/common/components"
 import { useSelector } from "react-redux"
-import { selectIsLoggedIn } from "@/features/auth/model/auth-slice.ts"
+import { selectIsLoggedIn } from "@/app/app-slice.ts"
 
 export const Path = {
   Main: "/",
