@@ -1,8 +1,9 @@
 import { instance } from "@/common/instance"
 import { DeafultResponse } from "@/common/types"
 import type { GetTasksResponse, TaskOperstionResponse, UpdateTaskModel } from "./tasksApi.types"
+import { baseApi } from "@/app/baseApi.ts"
 
-export const tasksApi = {
+export const _tasksApi = {
   getTasks(todolistId: string) {
     return instance.get<GetTasksResponse>(`/todo-lists/${todolistId}/tasks`)
   },
@@ -19,3 +20,15 @@ export const tasksApi = {
     return instance.delete<DeafultResponse>(`/todo-lists/${todolistId}/tasks/${taskId}`)
   },
 }
+
+export const tasksApi = baseApi.injectEndpoints({
+  endpoints: (build) => ({
+    getTasks: build.query<GetTasksResponse, string>({
+      query: ( todolistId ) => ({
+        url: `/todo-lists/${todolistId}/tasks`,
+      }),
+      providesTags: ["Task"],
+    }),
+  }),
+})
+export const {useGetTasksQuery} = tasksApi
