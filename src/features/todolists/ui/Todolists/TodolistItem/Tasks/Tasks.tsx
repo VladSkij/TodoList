@@ -7,7 +7,6 @@ import { fetchTasksTC, selectTasks } from "@/features/todolists/model/tasks-slic
 import { useEffect } from "react"
 import { TaskStatus } from "@/common/enums"
 import { useGetTasksQuery } from "@/features/todolists/api/tasksApi.ts"
-import { string } from "zod"
 
 type Props = {
   todolist: DomainTodolist
@@ -21,7 +20,6 @@ export const Tasks = ({ todolist }: Props) => {
   useEffect(() => {
     dispatch(fetchTasksTC(id))
   }, [])
-  // const todolistTasks = tasks[id]
 
   const { data } = useGetTasksQuery(id)
   let todolistTasks = data?.items

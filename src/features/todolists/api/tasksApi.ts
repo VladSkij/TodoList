@@ -2,6 +2,7 @@ import { instance } from "@/common/instance"
 import { DeafultResponse } from "@/common/types"
 import type { GetTasksResponse, TaskOperstionResponse, UpdateTaskModel } from "./tasksApi.types"
 import { baseApi } from "@/app/baseApi.ts"
+import { BaseQueryArg } from "@reduxjs/toolkit/query"
 
 export const _tasksApi = {
   getTasks(todolistId: string) {
@@ -21,14 +22,32 @@ export const _tasksApi = {
   },
 }
 
+
+
 export const tasksApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
     getTasks: build.query<GetTasksResponse, string>({
-      query: ( todolistId ) => ({
+      query: (todolistId) => ({
         url: `/todo-lists/${todolistId}/tasks`,
       }),
       providesTags: ["Task"],
     }),
+    createTask: build.mutation<TaskOperstionResponse, { todolistId: string; title: string }>({
+      query: ({ todolistId, title }) => ({
+        url: `/todo-lists/${todolistId}/tasks`,
+        method: "POST",
+        body: { title },
+      }),
+      invalidatesTags: ["Task"],
+    }),
+    updateTask: build.mutation<TaskOperstionResponse, { todolistId: string; taskId: string; model: UpdateTaskModel }>({
+      query: ({ todolistId, taskId, model }) => ({
+        url: `/todo-lists/${todolistId}/tasks/${taskId}`,
+        method: "PUT",
+        body: model,
+      }),
+      invalidatesTags: ["Task"],
+    }),
   }),
 })
-export const {useGetTasksQuery} = tasksApi
+export const {useGetTasksQuery, useCreateTaskMutation, useUpdateTaskMutation} = tasksApi

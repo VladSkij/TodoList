@@ -9,6 +9,7 @@ import { getListItemSx } from "./TaskItem.styles"
 import { TaskStatus } from "@/common/enums"
 import { ChangeEvent } from "react"
 import type { DomainTask } from "@/features/todolists/api/tasksApi.types.ts"
+import { useUpdateTaskMutation } from "@/features/todolists/api/tasksApi.ts"
 
 type Props = {
   task: DomainTask
@@ -34,8 +35,21 @@ export const TaskItem = ({ task, todolistId, disabled }: Props) => {
     )
   }
 
-  const changeTaskTitle = (title: string) => {
-    dispatch(updateTaskTC({ todolistId, taskId: task.id, domainModel: {title} }))
+  const [changleTaskTitle] = useUpdateTaskMutation()
+  const changeTaskTitleHandler = (title: string) => {
+    console.log("I'm work")
+    changleTaskTitle({
+      todolistId,
+      taskId: task.id,
+      model: {
+        status: task.status,
+        title,
+        deadline: task.deadline,
+        description: task.description,
+        priority: task.priority,
+        startDate: task.startDate,
+      },
+    })
   }
 
   const checked = task.status === TaskStatus.Completed
@@ -44,7 +58,7 @@ export const TaskItem = ({ task, todolistId, disabled }: Props) => {
     <ListItem sx={getListItemSx(checked)}>
       <div>
         <Checkbox checked={checked} onChange={changeTaskStatus} disabled={disabled} />
-        <EditableSpan value={task.title} onChange={changeTaskTitle} disabled={disabled} />
+        <EditableSpan value={task.title} onChange={changeTaskTitleHandler} disabled={disabled} />
       </div>
       <span>{new Date(task.addedDate).toLocaleDateString()}</span>
       <IconButton onClick={deleteTask} disabled={disabled}>
