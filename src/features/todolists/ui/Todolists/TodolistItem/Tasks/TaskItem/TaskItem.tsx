@@ -9,7 +9,7 @@ import { getListItemSx } from "./TaskItem.styles"
 import { TaskStatus } from "@/common/enums"
 import { ChangeEvent } from "react"
 import type { DomainTask } from "@/features/todolists/api/tasksApi.types.ts"
-import { useUpdateTaskMutation } from "@/features/todolists/api/tasksApi.ts"
+import { useGetTasksQuery, useUpdateTaskMutation } from "@/features/todolists/api/tasksApi.ts"
 
 type Props = {
   task: DomainTask
@@ -19,45 +19,41 @@ type Props = {
 
 export const TaskItem = ({ task, todolistId, disabled }: Props) => {
   const dispatch = useAppDispatch()
-
   const deleteTask = () => {
     dispatch(deleteTaskTC({ todolistId, taskId: task.id }))
   }
 
-  const changeTaskStatus = (e: ChangeEvent<HTMLInputElement>) => {
-    const newStatusValue = e.currentTarget.checked ? TaskStatus.Completed : TaskStatus.New
-    dispatch(
-      updateTaskTC({
-        todolistId,
-        taskId: task.id,
-        domainModel: { status: newStatusValue ? TaskStatus.Completed : TaskStatus.New },
-      }),
-    )
-  }
+  const [updateTask] = useUpdateTaskMutation()
+  const { data } = useGetTasksQuery(todolistId)
 
-  const [changleTaskTitle] = useUpdateTaskMutation()
   const changeTaskTitleHandler = (title: string) => {
-    console.log("I'm work")
-    changleTaskTitle({
+    updateTask({
       todolistId,
       taskId: task.id,
       model: {
-        status: task.status,
         title,
-        deadline: task.deadline,
-        description: task.description,
-        priority: task.priority,
-        startDate: task.startDate,
+      },
+    })
+  }
+
+  const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>)=>{
+    const newStatusValue = e.currentTarget.checked ? TaskStatus.Completed : TaskStatus.New
+    updateTask({
+      todolistId,
+      taskId: task.id,
+      model: {
+        status: newStatusValue
       },
     })
   }
 
   const checked = task.status === TaskStatus.Completed
 
+
   return (
     <ListItem sx={getListItemSx(checked)}>
       <div>
-        <Checkbox checked={checked} onChange={changeTaskStatus} disabled={disabled} />
+        <Checkbox checked={checked} onChange={changeTaskStatusHandler} disabled={disabled} />
         <EditableSpan value={task.title} onChange={changeTaskTitleHandler} disabled={disabled} />
       </div>
       <span>{new Date(task.addedDate).toLocaleDateString()}</span>

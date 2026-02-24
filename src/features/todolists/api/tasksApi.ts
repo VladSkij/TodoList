@@ -40,7 +40,7 @@ export const tasksApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Task"],
     }),
-    updateTask: build.mutation<TaskOperstionResponse, { todolistId: string; taskId: string; model: UpdateTaskModel }>({
+    updateTask: build.mutation<TaskOperstionResponse,{ todolistId: string; taskId: string; model: Partial<UpdateTaskModel> }>({
       query: ({ todolistId, taskId, model }) => ({
         url: `/todo-lists/${todolistId}/tasks/${taskId}`,
         method: "PUT",

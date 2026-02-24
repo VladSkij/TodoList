@@ -5,8 +5,7 @@ import Grid from "@mui/material/Grid2"
 import { useCreateTodolistMutation } from "@/features/todolists/api/todolistsApi.ts"
 
 export const Main = () => {
-  const [createTodolist] = useCreateTodolistMutation()
-
+  const [createTodolist,{data, error, isLoading}] = useCreateTodolistMutation()
   const createTodolistHandler = (title: string) => {
     createTodolist(title)
   }
