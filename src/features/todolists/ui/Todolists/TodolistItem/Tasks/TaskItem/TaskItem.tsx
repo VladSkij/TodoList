@@ -17,6 +17,16 @@ type Props = {
   disabled?: boolean
 }
 
+const updateTaskModel = (task: DomainTask, patch: Partial<UpdateTaskModel>): UpdateTaskModel => ({
+  title: task.title,
+  status: task.status,
+  description: task.description,
+  priority: task.priority,
+  startDate: task.startDate,
+  deadline: task.deadline,
+  ...patch,
+})
+
 export const TaskItem = ({ task, todolistId, disabled }: Props) => {
   const dispatch = useAppDispatch()
   const deleteTask = () => {
@@ -26,31 +36,12 @@ export const TaskItem = ({ task, todolistId, disabled }: Props) => {
   const [updateTask] = useUpdateTaskMutation()
 
   const changeTaskTitleHandler = (title: string) => {
-    const model: UpdateTaskModel = {
-      title: title,
-
-      status: task.status,
-      description: task.description,
-      priority: task.priority,
-      startDate: task.startDate,
-      deadline: task.deadline,
-    }
-    updateTask({ todolistId, taskId: task.id, model })
+    updateTask({ todolistId, taskId: task.id, model: updateTaskModel(task, { title: title }) })
   }
 
   const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
     let newStatusValue = e.currentTarget.checked ? TaskStatus.Completed : TaskStatus.New
-
-    const model: UpdateTaskModel = {
-      status: newStatusValue,
-
-      description: task.description,
-      title: task.title,
-      priority: task.priority,
-      startDate: task.startDate,
-      deadline: task.deadline,
-    }
-    updateTask({ todolistId, taskId: task.id, model })
+    updateTask({ todolistId, taskId: task.id, model: updateTaskModel(task, { status: newStatusValue }) })
   }
 
   const checked = task.status === TaskStatus.Completed
