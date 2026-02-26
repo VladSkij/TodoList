@@ -1,6 +1,6 @@
 import { EditableSpan } from "@/common/components/EditableSpan/EditableSpan"
 import { useAppDispatch } from "@/common/hooks"
-import { deleteTaskTC, updateTaskTC } from "@/features/todolists/model/tasks-slice.ts"
+import { deleteTaskTC } from "@/features/todolists/model/tasks-slice.ts"
 import DeleteIcon from "@mui/icons-material/Delete"
 import Checkbox from "@mui/material/Checkbox"
 import IconButton from "@mui/material/IconButton"
@@ -8,8 +8,8 @@ import ListItem from "@mui/material/ListItem"
 import { getListItemSx } from "./TaskItem.styles"
 import { TaskStatus } from "@/common/enums"
 import { ChangeEvent } from "react"
-import type { DomainTask } from "@/features/todolists/api/tasksApi.types.ts"
-import { useGetTasksQuery, useUpdateTaskMutation } from "@/features/todolists/api/tasksApi.ts"
+import type { DomainTask, UpdateTaskModel } from "@/features/todolists/api/tasksApi.types.ts"
+import { useUpdateTaskMutation } from "@/features/todolists/api/tasksApi.ts"
 
 type Props = {
   task: DomainTask
@@ -24,31 +24,36 @@ export const TaskItem = ({ task, todolistId, disabled }: Props) => {
   }
 
   const [updateTask] = useUpdateTaskMutation()
-  const { data } = useGetTasksQuery(todolistId)
 
   const changeTaskTitleHandler = (title: string) => {
-    updateTask({
-      todolistId,
-      taskId: task.id,
-      model: {
-        title,
-      },
-    })
+    const model: UpdateTaskModel = {
+      title: title,
+
+      status: task.status,
+      description: task.description,
+      priority: task.priority,
+      startDate: task.startDate,
+      deadline: task.deadline,
+    }
+    updateTask({ todolistId, taskId: task.id, model })
   }
 
-  const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>)=>{
-    const newStatusValue = e.currentTarget.checked ? TaskStatus.Completed : TaskStatus.New
-    updateTask({
-      todolistId,
-      taskId: task.id,
-      model: {
-        status: newStatusValue
-      },
-    })
+  const changeTaskStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
+    let newStatusValue = e.currentTarget.checked ? TaskStatus.Completed : TaskStatus.New
+
+    const model: UpdateTaskModel = {
+      status: newStatusValue,
+
+      description: task.description,
+      title: task.title,
+      priority: task.priority,
+      startDate: task.startDate,
+      deadline: task.deadline,
+    }
+    updateTask({ todolistId, taskId: task.id, model })
   }
 
   const checked = task.status === TaskStatus.Completed
-
 
   return (
     <ListItem sx={getListItemSx(checked)}>

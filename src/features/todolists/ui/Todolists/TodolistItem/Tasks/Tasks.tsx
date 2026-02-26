@@ -1,9 +1,8 @@
-import { useAppDispatch, useAppSelector } from "@/common/hooks"
-// import { selectTasks } from "@/features/todolists/model/tasks-selectors"
+import { useAppDispatch } from "@/common/hooks"
 import type { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts"
 import { TaskItem } from "./TaskItem/TaskItem"
 import List from "@mui/material/List"
-import { fetchTasksTC, selectTasks } from "@/features/todolists/model/tasks-slice.ts"
+import { fetchTasksTC } from "@/features/todolists/model/tasks-slice.ts"
 import { useEffect } from "react"
 import { TaskStatus } from "@/common/enums"
 import { useGetTasksQuery } from "@/features/todolists/api/tasksApi.ts"
@@ -15,13 +14,13 @@ type Props = {
 export const Tasks = ({ todolist }: Props) => {
   const { id, filter } = todolist
 
-  const tasks = useAppSelector(selectTasks)
   const dispatch = useAppDispatch()
   useEffect(() => {
     dispatch(fetchTasksTC(id))
   }, [])
 
   const { data } = useGetTasksQuery(id)
+
   let todolistTasks = data?.items
   let filteredTasks = todolistTasks
 
@@ -39,7 +38,7 @@ export const Tasks = ({ todolist }: Props) => {
       ) : (
         <List>
           {filteredTasks?.map((task) => (
-            <TaskItem key={task.id} task={task} todolistId={id}  disabled={todolist.entityStatus==='loading'} />
+            <TaskItem key={task.id} task={task} todolistId={id} disabled={todolist.entityStatus === "loading"} />
           ))}
         </List>
       )}
