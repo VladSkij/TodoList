@@ -3,7 +3,15 @@ import { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts"
 import DeleteIcon from "@mui/icons-material/Delete"
 import IconButton from "@mui/material/IconButton"
 import styles from "./TodolistTitle.module.css"
-import { useChangeTodolistTitleMutation, useDeleteTodolistMutation } from "@/features/todolists/api/todolistsApi.ts"
+import {
+  todolistsApi,
+  useChangeTodolistTitleMutation,
+  useDeleteTodolistMutation,
+} from "@/features/todolists/api/todolistsApi.ts"
+import { useDispatch } from "react-redux"
+import { useAppDispatch } from "@/common/hooks"
+import { ResaultCode } from "@/common/enums"
+import { RequestStatus } from "@/common/types"
 
 type Props = {
   todolist: DomainTodolist
@@ -14,9 +22,30 @@ export const TodolistTitle = ({ todolist }: Props) => {
   const { id, title, entityStatus, addedDate } = todolist
   const [changeTodolistTitle] = useChangeTodolistTitleMutation()
   const [deleteTodolist] = useDeleteTodolistMutation()
+  const dispatch = useAppDispatch()
+
+  const changeEntityStatus = (status: RequestStatus) => {
+    dispatch(
+      todolistsApi.util.updateQueryData("getTodolists", undefined, (state) => {
+        const todolist = state.find((todolist) => todolist.id === id)
+        if (todolist) {
+          todolist.entityStatus = status
+        }
+      }),
+    )
+  }
+
 
   const deleteTodolistHandler = () => {
-    deleteTodolist(id)
+    changeEntityStatus('loading')
+    deleteTodolist(id).unwrap().then((res)=>{
+      if(res.resultCode === ResaultCode.Error){
+        changeEntityStatus("idle")
+      }
+    })
+      .catch(()=>{
+        changeEntityStatus("idle")
+      })
   }
 
   const changeTodolistTitleHandler = (title: string) => {
