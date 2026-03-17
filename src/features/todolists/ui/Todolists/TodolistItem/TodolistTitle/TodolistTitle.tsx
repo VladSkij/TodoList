@@ -8,7 +8,6 @@ import {
   useChangeTodolistTitleMutation,
   useDeleteTodolistMutation,
 } from "@/features/todolists/api/todolistsApi.ts"
-import { useDispatch } from "react-redux"
 import { useAppDispatch } from "@/common/hooks"
 import { ResaultCode } from "@/common/enums"
 import { RequestStatus } from "@/common/types"
@@ -18,10 +17,9 @@ type Props = {
 }
 
 export const TodolistTitle = ({ todolist }: Props) => {
-
   const { id, title, entityStatus, addedDate } = todolist
   const [changeTodolistTitle] = useChangeTodolistTitleMutation()
-  const [deleteTodolist] = useDeleteTodolistMutation()
+  const [removeTodolist] = useDeleteTodolistMutation()
   const dispatch = useAppDispatch()
 
   const changeEntityStatus = (status: RequestStatus) => {
@@ -35,16 +33,17 @@ export const TodolistTitle = ({ todolist }: Props) => {
     )
   }
 
-
   const deleteTodolistHandler = () => {
-    changeEntityStatus('loading')
-    deleteTodolist(id).unwrap().then((res)=>{
-      if(res.resultCode === ResaultCode.Error){
-        changeEntityStatus("idle")
-      }
-    })
-      .catch(()=>{
-        changeEntityStatus("idle")
+    changeEntityStatus("loading")
+    removeTodolist(id)
+      .unwrap()
+      .then((res) => {
+        if (res.resultCode === ResaultCode.Error) {
+          changeEntityStatus("failed")
+        }
+      })
+      .catch(() => {
+        changeEntityStatus("failed")
       })
   }
 

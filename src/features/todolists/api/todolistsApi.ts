@@ -1,5 +1,4 @@
-import { instance } from "@/common/instance"
-import { BaseResponse, DeafultResponse } from "@/common/types"
+import { BaseResponse } from "@/common/types"
 import type { Todolist } from "./todolistsApi.types"
 import { DomainTodolist } from "@/features/todolists/model/todolists-slice.ts"
 import { baseApi } from "@/app/baseApi.ts"
@@ -35,7 +34,7 @@ export const todolistsApi = baseApi.injectEndpoints({
         method: "post",
         body: { title },
       }),
-       invalidatesTags: ["Todolist"],
+      invalidatesTags: ["Todolist"],
     }),
     changeTodolistTitle: build.mutation<BaseResponse, { id: string; title: string }>({
       query: ({ id, title }) => ({

@@ -1,7 +1,4 @@
-import { useAppDispatch } from "@/common/hooks"
 import { FilterButtons } from "./FilterButtons/FilterButtons"
-import { createTaskTC } from "@/features/todolists/model/tasks-slice.ts"
-
 import { Tasks } from "./Tasks/Tasks"
 import { TodolistTitle } from "./TodolistTitle/TodolistTitle"
 import { CreateItemForm } from "@/common/components/CreateItemForm/CreateItemForm"
@@ -13,7 +10,7 @@ type Props = {
 }
 
 export const TodolistItem = ({ todolist }: Props) => {
-const [createTask] = useCreateTaskMutation()
+  const [createTask] = useCreateTaskMutation()
   const createTaskHandler = (title: string) => {
     createTask({ todolistId: todolist.id, title })
   }

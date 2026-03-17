@@ -25,10 +25,10 @@ export const Tasks = ({ todolist }: Props) => {
   let filteredTasks = todolistTasks
 
   if (filter === "active") {
-    todolistTasks = todolistTasks?.filter((task) => task.status === TaskStatus.New)
+    filteredTasks = todolistTasks?.filter((task) => task.status === TaskStatus.New)
   }
   if (filter === "completed") {
-    todolistTasks = todolistTasks?.filter((task) => task.status === TaskStatus.Completed)
+    filteredTasks = todolistTasks?.filter((task) => task.status === TaskStatus.Completed)
   }
 
   return (

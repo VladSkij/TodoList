@@ -22,7 +22,6 @@ import { Path } from "@/common/routing/Routing.tsx"
 import { useLogoutMutation } from "@/features/auth/api/authApi.ts"
 import { ResaultCode } from "@/common/enums"
 import { AUTH_TOKEN, EMAIL } from "@/common/constants"
-import { clearDataAC } from "@/common/actions"
 import { baseApi } from "@/app/baseApi.ts"
 
 export const Header = () => {
@@ -47,10 +46,11 @@ export const Header = () => {
           dispatch(setIsLoggedInAC({ isLoggedIn: false }))
           localStorage.removeItem(AUTH_TOKEN)
           localStorage.removeItem(EMAIL)
-          dispatch(baseApi.util.resetApiState())}
+          // dispatch(baseApi.util.resetApiState())
+        }
       })
-      .then(()=>{
-        dispatch(baseApi.util.invalidateTags(["Task", 'Todolist']))
+      .then(() => {
+        dispatch(baseApi.util.invalidateTags(["Task", "Todolist"]))
       })
   }
 
