@@ -6,6 +6,7 @@ import { fetchTasksTC } from "@/features/todolists/model/tasks-slice.ts"
 import { useEffect } from "react"
 import { TaskStatus } from "@/common/enums"
 import { useGetTasksQuery } from "@/features/todolists/api/tasksApi.ts"
+import { TasksSkeleton } from "@/features/todolists/ui/Todolists/TodolistItem/Tasks/TasksSkeleton/TasksSkeleton.tsx"
 
 type Props = {
   todolist: DomainTodolist
@@ -19,7 +20,7 @@ export const Tasks = ({ todolist }: Props) => {
     dispatch(fetchTasksTC(id))
   }, [])
 
-  const { data } = useGetTasksQuery(id)
+  const { data, isLoading } = useGetTasksQuery(id)
 
   let todolistTasks = data?.items
   let filteredTasks = todolistTasks
@@ -29,6 +30,12 @@ export const Tasks = ({ todolist }: Props) => {
   }
   if (filter === "completed") {
     filteredTasks = todolistTasks?.filter((task) => task.status === TaskStatus.Completed)
+  }
+
+  if (isLoading) {
+    return (
+      <TasksSkeleton/>
+    )
   }
 
   return (
