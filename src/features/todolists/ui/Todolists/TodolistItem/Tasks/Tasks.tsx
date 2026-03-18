@@ -19,18 +19,18 @@ export const Tasks = ({ todolist }: Props) => {
   const { id, filter } = todolist
 
   const dispatch = useAppDispatch()
-  const { data, isLoading, error } = useGetTasksQuery("id")
+  const { data, isLoading, error } = useGetTasksQuery(id)
 
 
-  useEffect(() => {
-    if (!error) return
-    if ("status" in error) {
-      const errMsg = "error" in error ? error.error : (error.data as FetchTasksError).message
-      dispatch(setAppErrorAC({ error: errMsg }))
-    } else {
-      dispatch(setAppErrorAC({ error: error.message || "Some error occurred" }))
-    }
-  }, [error])
+  // useEffect(() => {
+  //   if (!error) return
+  //   if ("status" in error) {
+  //     const errMsg = "error" in error ? error.error : (error.data as FetchTasksError).message
+  //     dispatch(setAppErrorAC({ error: errMsg }))
+  //   } else {
+  //     dispatch(setAppErrorAC({ error: error.message || "Some error occurred" }))
+  //   }
+  // }, [error])
 
 
   let todolistTasks = data?.items
