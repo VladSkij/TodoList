@@ -17,33 +17,60 @@ export const baseApi = createApi({
       },
     })(args, api, extraOptions)
 
-    if(result.error){
-      if (
-        result.error.status === "FETCH_ERROR" ||
-        result.error.status === "PARSING_ERROR" ||
-        result.error.status === "CUSTOM_ERROR" ||
-        result.error.status === "TIMEOUT_ERROR"
-      ) {
-        api.dispatch(setAppErrorAC({ error: result.error.error }))
-      }
-      if(result.error.status === 403){
-        api.dispatch(setAppErrorAC({ error: "403 Forbidden Error. Check API-KEY" }))
-      }
-      if (result.error.status === 400) {
-        //var1
-        //api.dispatch(setAppErrorAC({ error: (result.error.data as{ message: string }).message }))
-
-        //var2+++
-        if (isErrorWithMessage(result.error.data)) {
-          api.dispatch(setAppErrorAC({error: result.error.data.message}))
-        }else{
-          api.dispatch(setAppErrorAC({
-            error: 'Something went wrong!'
-          }))
-        }
-      }
-    }
+    // if(result.error){
+    //   if (
+    //     result.error.status === "FETCH_ERROR" ||
+    //     result.error.status === "PARSING_ERROR" ||
+    //     result.error.status === "CUSTOM_ERROR" ||
+    //     result.error.status === "TIMEOUT_ERROR"
+    //   ) {
+    //     api.dispatch(setAppErrorAC({ error: result.error.error }))
+    //   }
+    //   if(result.error.status === 403){
+    //     api.dispatch(setAppErrorAC({ error: "403 Forbidden Error. Check API-KEY" }))
+    //   }
+    //   if (result.error.status === 400) {
+    //     //var1
+    //     //api.dispatch(setAppErrorAC({ error: (result.error.data as{ message: string }).message }))
+    //
+    //     //var2+++
+    //     if (isErrorWithMessage(result.error.data)) {
+    //       api.dispatch(setAppErrorAC({error: result.error.data.message}))
+    //     }else{
+    //       api.dispatch(setAppErrorAC({
+    //         error: 'Something went wrong!'
+    //       }))
+    //     }
+    //   }
+    // }
     //debugger
+
+    let error = 'Some error occured'
+    if(result.error){
+      switch (result.error.status) {
+        case 'FETCH_ERROR':
+        case 'PARSING_ERROR':
+        case 'CUSTOM_ERROR':
+        case 'TIMEOUT_ERROR':
+          error = result.error.error
+          break
+        case 403:
+          error = "403 Forbidden Error. Check API-KEY"
+          break
+        case 400:
+          if (isErrorWithMessage(result.error.data)){
+            error = result.error.data.message
+          }else{
+            error = JSON.stringify(result.error.data)
+          }
+          break
+        default:
+          error = JSON.stringify(result.error)
+          break
+      }
+      api.dispatch(setAppErrorAC({error}))
+    }
+
     return result
   },
   endpoints: () => ({}),
