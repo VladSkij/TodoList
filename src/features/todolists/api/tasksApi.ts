@@ -7,7 +7,8 @@ export const tasksApi = baseApi.injectEndpoints({
       query: (todolistId) => ({
         url: `/todo-lists/${todolistId}/tasks`,
       }),
-      providesTags: (res) => (res ? res.items.map(({ id }) => ({ type: "Task", id })) : ["Task"]),
+      providesTags: (res, err, todolistId) =>
+        res ? [...res.items.map(({id}) =>({type: "Task", id}) as const), {type: "Task", id: todolistId}] : ["Task"],
     }),
 
     removeTask: build.mutation<TaskOperstionResponse, { todolistId: string; taskId: string }>({
