@@ -25,6 +25,13 @@ export const tasksApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Task"],
     }),
+    removeTask: build.mutation<TaskOperstionResponse, { todolistId: string; taskId: string }>({
+      query: ({ todolistId, taskId }) => ({
+        url: `/todo-lists/${todolistId}/tasks/${taskId}`,
+        method: "DELETE",
+      }),
+      invalidatesTags: ["Task"],
+    }),
   }),
 })
-export const { useGetTasksQuery, useCreateTaskMutation, useUpdateTaskMutation } = tasksApi
+export const { useGetTasksQuery, useCreateTaskMutation, useUpdateTaskMutation, useRemoveTaskMutation } = tasksApi
