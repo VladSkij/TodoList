@@ -7,30 +7,33 @@ export const tasksApi = baseApi.injectEndpoints({
       query: (todolistId) => ({
         url: `/todo-lists/${todolistId}/tasks`,
       }),
-      providesTags: ["Task"],
+      providesTags: (res) => (res ? res.items.map(({ id }) => ({ type: "Task", id })) : ["Task"]),
     }),
-    createTask: build.mutation<TaskOperstionResponse, { todolistId: string; title: string }>({
-      query: ({ todolistId, title }) => ({
-        url: `/todo-lists/${todolistId}/tasks`,
-        method: "POST",
-        body: { title },
+
+    removeTask: build.mutation<TaskOperstionResponse, { todolistId: string; taskId: string }>({
+      query: ({ todolistId, taskId }) => ({
+        url: `/todo-lists/${todolistId}/tasks/${taskId}`,
+        method: "DELETE",
       }),
-      invalidatesTags: ["Task"],
+      invalidatesTags: (_res, _err, { taskId }) => [{ type: "Task", id: taskId }],
     }),
+
     updateTask: build.mutation<TaskOperstionResponse, { todolistId: string; taskId: string; model: UpdateTaskModel }>({
       query: ({ todolistId, taskId, model }) => ({
         url: `/todo-lists/${todolistId}/tasks/${taskId}`,
         method: "PUT",
         body: model,
       }),
-      invalidatesTags: ["Task"],
+      invalidatesTags: (_res, _err, { taskId }) => [{ type: "Task", id: taskId }],
     }),
-    removeTask: build.mutation<TaskOperstionResponse, { todolistId: string; taskId: string }>({
-      query: ({ todolistId, taskId }) => ({
-        url: `/todo-lists/${todolistId}/tasks/${taskId}`,
-        method: "DELETE",
+
+    createTask: build.mutation<TaskOperstionResponse, { todolistId: string; title: string }>({
+      query: ({ todolistId, title }) => ({
+        url: `/todo-lists/${todolistId}/tasks`,
+        method: "POST",
+        body: { title },
       }),
-      invalidatesTags: ["Task"],
+      invalidatesTags: (res) => [{ type: "Task", id: res ? res.data.item.id : "LIST" }],
     }),
   }),
 })
