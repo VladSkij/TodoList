@@ -33,18 +33,34 @@ export const TodolistTitle = ({ todolist }: Props) => {
     )
   }
 
-  const deleteTodolistHandler = () => {
-    changeEntityStatus("loading")
-    removeTodolist(id)
-      .unwrap()
-      .then((res) => {
-        if (res.resultCode === ResaultCode.Error) {
-          changeEntityStatus("failed")
+  // const deleteTodolistHandler = () => {
+  //   changeEntityStatus("loading")
+  //   removeTodolist(id)
+  //     .unwrap()
+  //     .then((res) => {
+  //       if (res.resultCode === ResaultCode.Error) {
+  //         changeEntityStatus("failed")
+  //       }
+  //     })
+  //     .catch(() => {
+  //       changeEntityStatus("failed")
+  //     })
+  // }
+
+  const deleteTodolistHandler = async () =>{
+    const patchResult = dispatch(
+      todolistsApi.util.updateQueryData('getTodolists', undefined, state => {
+        const todolist = state.find(todolist => todolist.id === id)
+        if (todolist) {
+          todolist.entityStatus = 'loading'
         }
       })
-      .catch(() => {
-        changeEntityStatus("failed")
-      })
+    )
+    try {
+      await removeTodolist(id).unwrap()
+    } catch {
+      patchResult.undo()
+    }
   }
 
   const changeTodolistTitleHandler = (title: string) => {

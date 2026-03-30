@@ -22,7 +22,6 @@ export const Tasks = ({ todolist }: Props) => {
     todolistId: id,
     params: { page },
   })
-  console.log({ data, currentData })
 
   let todolistTasks = data?.items
   let filteredTasks = todolistTasks
