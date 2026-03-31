@@ -28,21 +28,20 @@ export const todolistsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["Todolist"],
     }),
+
     deleteTodolist: build.mutation<BaseResponse, string>({
       query: (id) => ({
         url: `/todo-lists/${id}`,
         method: "delete",
       }),
-      async onQueryStarted(id: string, {dispatch, queryFulfilled}) {
+      async onQueryStarted(id: string, { dispatch, queryFulfilled }) {
         const patchResult = dispatch(
-          todolistsApi.util.updateQueryData('getTodolists', undefined, state => {
-            const todolist = state.find(todolist => todolist.id === id)
-            if (todolist) {
-              todolist.entityStatus = 'loading'
-            }
-          })
+          todolistsApi.util.updateQueryData("getTodolists", undefined, (state) => {
+            const index = state.findIndex((todo) => todo.id === id)
+            if (index !== -1) state.splice(index, 1)
+          }),
         )
-        try{
+        try {
           await queryFulfilled
         } catch {
           patchResult.undo()
