@@ -33,35 +33,37 @@ export const TodolistTitle = ({ todolist }: Props) => {
     )
   }
 
-  // const deleteTodolistHandler = () => {
-  //   changeEntityStatus("loading")
-  //   removeTodolist(id)
-  //     .unwrap()
-  //     .then((res) => {
-  //       if (res.resultCode === ResaultCode.Error) {
-  //         changeEntityStatus("failed")
-  //       }
-  //     })
-  //     .catch(() => {
-  //       changeEntityStatus("failed")
-  //     })
-  // }
-
-  const deleteTodolistHandler = async () =>{
-    const patchResult = dispatch(
-      todolistsApi.util.updateQueryData('getTodolists', undefined, state => {
-        const todolist = state.find(todolist => todolist.id === id)
-        if (todolist) {
-          todolist.entityStatus = 'loading'
+  const deleteTodolistHandler = () => {
+    changeEntityStatus("loading")
+    removeTodolist(id)
+      .unwrap()
+      .then((res) => {
+        if (res.resultCode === ResaultCode.Error) {
+          changeEntityStatus("failed")
         }
       })
-    )
-    try {
-      await removeTodolist(id).unwrap()
-    } catch {
-      patchResult.undo()
-    }
+      .catch(() => {
+        changeEntityStatus("failed")
+      })
   }
+
+  // const deleteTodolistHandler = async () =>{
+  //   const patchResult = dispatch(
+  //     todolistsApi.util.updateQueryData('getTodolists', undefined, state => {
+  //       // const todolist = state.find(todolist => todolist.id === id)
+  //       // if (todolist) {
+  //       //   todolist.entityStatus = 'loading'
+  //       // }
+  //         const index = state.findIndex((todo) => todo.id === id)
+  //         if (index !== -1) state.splice(index, 1)
+  //     })
+  //   )
+  //   try {
+  //     await removeTodolist(id).unwrap()
+  //   } catch {
+  //     patchResult.undo()
+  //   }
+  // }
 
   const changeTodolistTitleHandler = (title: string) => {
     changeTodolistTitle({ id, title })
