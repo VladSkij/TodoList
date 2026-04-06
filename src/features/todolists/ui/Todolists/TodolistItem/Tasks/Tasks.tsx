@@ -45,7 +45,7 @@ export const Tasks = ({ todolist }: Props) => {
         <>
           <List>
             {filteredTasks?.map((task) => (
-              <TaskItem key={task.id} task={task} todolistId={id} disabled={todolist.entityStatus === "loading"} />
+              <TaskItem key={task.id} task={task} todolistId={id}/>
             ))}
           </List>
             <TasksPagination totalCount={data?.totalCount || 0} page={page} setPage={setPage} />

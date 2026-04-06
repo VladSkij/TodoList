@@ -29,5 +29,3 @@ export const defaultResponseSchema = baseResponseSchema(z.object({
 }))
 
 export type DeafultResponse = z.infer<typeof defaultResponseSchema>
-
-export type RequestStatus = "idle" | "loading" | "succeeded" | "failed"

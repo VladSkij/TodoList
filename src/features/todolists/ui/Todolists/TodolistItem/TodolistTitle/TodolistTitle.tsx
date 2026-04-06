@@ -10,7 +10,7 @@ type Props = {
 }
 
 export const TodolistTitle = ({ todolist }: Props) => {
-  const { id, title, entityStatus, addedDate } = todolist
+  const { id, title, addedDate } = todolist
   const [changeTodolistTitle] = useChangeTodolistTitleMutation()
   const [removeTodolist] = useDeleteTodolistMutation()
 
@@ -22,15 +22,13 @@ export const TodolistTitle = ({ todolist }: Props) => {
     changeTodolistTitle({ id, title })
   }
 
-  const disabled = entityStatus === "loading"
-
   return (
     <div className={styles.container}>
       <h3>
-        <EditableSpan value={title} onChange={changeTodolistTitleHandler} disabled={disabled} />
+        <EditableSpan value={title} onChange={changeTodolistTitleHandler}/>
       </h3>
       <span>{new Date(addedDate).toLocaleDateString()}</span>
-      <IconButton onClick={deleteTodolistHandler} disabled={disabled}>
+      <IconButton onClick={deleteTodolistHandler}>
         <DeleteIcon />
       </IconButton>
     </div>
