@@ -42,15 +42,6 @@ export const tasksApi = baseApi.injectEndpoints({
             ),
           )
         })
-
-        // const patchResult = dispatch(
-        //   tasksApi.util.updateQueryData("getTasks", {todolistId, params: {page:1}}, state =>{
-        //     const index = state.items.findIndex(task => task.id === taskId)
-        //     if (index !== -1) {
-        //       state.items[index] = { ...state.items[index], ...model }
-        //       }
-        //     })
-        // )
         try{
           await queryFulfilled
         }catch{
