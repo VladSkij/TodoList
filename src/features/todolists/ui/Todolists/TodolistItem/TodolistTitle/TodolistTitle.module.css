@@ -1,4 +1,21 @@
 .container {
   display: flex;
   align-items: center;
+  padding: 5px 0;
+}
+
+.container h3{
+  padding: 8px;
+  border-right: 2px solid #087EA4;
+  margin: 0;
+  font-weight: 400;
+  font-size: 1rem;
+}
+
+.container span {
+  padding: 8px
+}
+
+.date{
+  border-right: 2px solid #087EA4;
 }

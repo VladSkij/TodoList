@@ -5,6 +5,7 @@ import styles from "./TodolistTitle.module.css"
 import { useChangeTodolistTitleMutation, useDeleteTodolistMutation } from "@/features/todolists/api/todolistsApi.ts"
 import { DomainTodolist } from "@/features/todolists/ui/Todolists/lib/types"
 
+
 type Props = {
   todolist: DomainTodolist
 }
@@ -27,7 +28,7 @@ export const TodolistTitle = ({ todolist }: Props) => {
       <h3>
         <EditableSpan value={title} onChange={changeTodolistTitleHandler}/>
       </h3>
-      <span>{new Date(addedDate).toLocaleDateString()}</span>
+      <span className={styles.date}>{new Date(addedDate).toLocaleDateString()}</span>
       <IconButton onClick={deleteTodolistHandler}>
         <DeleteIcon />
       </IconButton>
