@@ -6,7 +6,6 @@ import Checkbox from "@mui/material/Checkbox"
 import FormControl from "@mui/material/FormControl"
 import FormControlLabel from "@mui/material/FormControlLabel"
 import FormGroup from "@mui/material/FormGroup"
-import FormLabel from "@mui/material/FormLabel"
 import Grid from "@mui/material/Grid2"
 import TextField from "@mui/material/TextField"
 import { Controller, SubmitHandler, useForm } from "react-hook-form"
@@ -19,6 +18,8 @@ import { ResaultCode } from "@/common/enums"
 import { AUTH_TOKEN, EMAIL } from "@/common/constants"
 import { useGetCaptchaQuery } from "@/features/auth/api/captchaApi.ts"
 import { useState } from "react"
+
+
 export const Login = () => {
   const themeMode = useAppSelector(selectThemeMode)
   const theme = getTheme(themeMode)
@@ -26,7 +27,7 @@ export const Login = () => {
   const [login] = useLoginMutation()
 
 
-  const [isCaptchaRequired, setCaptchaRequired] = useState(true)
+  const [isCaptchaRequired, setCaptchaRequired] = useState(false)
 
   const { data:captchaData } = useGetCaptchaQuery(undefined, {
     skip: !isCaptchaRequired,
@@ -39,7 +40,12 @@ export const Login = () => {
     control,
   } = useForm<LoginInputs>({
     resolver: zodResolver(loginSchema),
-    defaultValues: { email: "free@samuraijs.com", password: "free", rememberMe: true },
+    defaultValues: {
+      email: "free@samuraijs.com",
+      password: "free",
+      rememberMe: true,
+      captcha: "Enter the code from the image",
+    },
   })
 
   const onSubmit: SubmitHandler<LoginInputs> = (data) => {
@@ -61,7 +67,7 @@ export const Login = () => {
   return (
     <Grid container justifyContent={"center"}>
       <FormControl>
-        <FormLabel>
+        <div>
           <p>
             To login get registered
             <a
@@ -80,7 +86,7 @@ export const Login = () => {
           <p>
             <b>Password:</b> free
           </p>
-        </FormLabel>
+        </div>
         <form onSubmit={handleSubmit(onSubmit)}>
           <FormGroup>
             <Controller
@@ -111,10 +117,15 @@ export const Login = () => {
               )}
             />
 
-            {isCaptchaRequired && <img src={captchaData?.url} />}
+            {isCaptchaRequired && (
+              <>
+                <img src={captchaData?.url} />
+                <Controller name="captcha" control={control} render={({ field }) => <TextField {...field} />} />
+              </>
+            )}
 
             {errors.password && <span className={s.errorMessage}>{errors.password.message}</span>}
-            {/*<FormControlLabel label="Remember me" control={<Checkbox />} {...register("rememberMe")} />*/}
+
             <FormControlLabel
               label="Remember me"
               control={
@@ -127,18 +138,6 @@ export const Login = () => {
                 />
               }
             />
-
-            {/*<FormControlLabel*/}
-            {/*  label="Remember me"*/}
-            {/*  control={*/}
-            {/*    <Controller*/}
-            {/*      name="rememberMe"*/}
-            {/*      control={control}*/}
-            {/*      render={({ field: { value, ...rest } }) => <Checkbox {...rest} checked={value} />}*/}
-            {/*    />*/}
-            {/*  }*/}
-            {/*/>*/}
-
             <Button type="submit" variant="contained" color="primary">
               Login
             </Button>
