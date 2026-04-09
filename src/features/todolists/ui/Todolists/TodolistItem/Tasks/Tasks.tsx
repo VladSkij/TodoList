@@ -36,7 +36,6 @@ export const Tasks = ({ todolist }: Props) => {
   if (isLoading) {
     return <TasksSkeleton />
   }
-
   return (
     <>
       {filteredTasks?.length === 0 ? (
