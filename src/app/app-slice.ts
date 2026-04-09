@@ -1,5 +1,4 @@
 import { createSlice, isFulfilled, isPending, isRejected } from "@reduxjs/toolkit"
-import { RequestStatus } from "@/common/types"
 import { todolistsApi } from "@/features/todolists/api/todolistsApi.ts"
 import { tasksApi } from "@/features/todolists/api/tasksApi.ts"
 
@@ -7,7 +6,7 @@ export const appSlice = createSlice({
   name: "app",
   initialState: {
     themeMode: "light" as ThemeMode,
-    status: "idle" as RequestStatus,
+    status: "idle",
     error: null as string | null,
     isLoggedIn: false,
     nickname: localStorage.getItem("email") as string | null,
@@ -49,7 +48,7 @@ export const appSlice = createSlice({
   }
 })
 
-export const { changeThemeModeAC, setAppStatusAC, setAppErrorAC, setIsLoggedInAC } = appSlice.actions
+export const { changeThemeModeAC, setAppErrorAC, setIsLoggedInAC } = appSlice.actions
 export const { selectThemeMode, selectAppStatus, selectAppError, selectNickname, selectIsLoggedIn } = appSlice.selectors
 export const appReducer = appSlice.reducer
 
