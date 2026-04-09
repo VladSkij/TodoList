@@ -17,11 +17,20 @@ import { LoginInputs } from "@/features/auth/lib/schemas/LoginSchema.ts"
 import { useLoginMutation } from "@/features/auth/api/authApi.ts"
 import { ResaultCode } from "@/common/enums"
 import { AUTH_TOKEN, EMAIL } from "@/common/constants"
+import { useGetCaptchaQuery } from "@/features/auth/api/captchaApi.ts"
+import { useState } from "react"
 export const Login = () => {
   const themeMode = useAppSelector(selectThemeMode)
   const theme = getTheme(themeMode)
   const dispatch = useAppDispatch()
   const [login] = useLoginMutation()
+
+
+  const [isCaptchaRequired, setCaptchaRequired] = useState(true)
+
+  const { data:captchaData } = useGetCaptchaQuery(undefined, {
+    skip: !isCaptchaRequired,
+  })
 
   const {
     handleSubmit,
@@ -42,8 +51,10 @@ export const Login = () => {
         localStorage.setItem(AUTH_TOKEN, res.data.token)
         localStorage.setItem(EMAIL, data.email)
       }
+      if (res.resultCode === ResaultCode.CaptchaError) {
+        setCaptchaRequired(true)
+      }
     })
-
     reset()
   }
 
@@ -99,6 +110,8 @@ export const Login = () => {
                 />
               )}
             />
+
+            {isCaptchaRequired && <img src={captchaData?.url} />}
 
             {errors.password && <span className={s.errorMessage}>{errors.password.message}</span>}
             {/*<FormControlLabel label="Remember me" control={<Checkbox />} {...register("rememberMe")} />*/}
