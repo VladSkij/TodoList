@@ -1,10 +1,11 @@
-import type { GetTasksResponse, TaskOperstionResponse, UpdateTaskModel } from "./tasksApi.types"
+import type { GetTasksResponse, TaskOperationResponse, UpdateTaskModel } from "./tasksApi.types"
 import { baseApi } from "@/app/baseApi.ts"
 import { PAGE_SIZE } from "@/common/constants"
 
+
 export const tasksApi = baseApi.injectEndpoints({
   endpoints: (build) => ({
-    getTasks: build.query<GetTasksResponse, { todolistId: string; params: { page: number} }>({
+    getTasks: build.query<GetTasksResponse, { todolistId: string; params: { page: number } }>({
       query: ({ todolistId, params }) => ({
         url: `/todo-lists/${todolistId}/tasks`,
         params: { ...params, count: PAGE_SIZE },
@@ -12,7 +13,7 @@ export const tasksApi = baseApi.injectEndpoints({
       providesTags: (_res, _err, { todolistId }) => [{ type: "Task", id: todolistId }],
     }),
 
-    removeTask: build.mutation<TaskOperstionResponse, { todolistId: string; taskId: string }>({
+    removeTask: build.mutation<TaskOperationResponse, { todolistId: string; taskId: string }>({
       query: ({ todolistId, taskId }) => ({
         url: `/todo-lists/${todolistId}/tasks/${taskId}`,
         method: "DELETE",
@@ -20,20 +21,25 @@ export const tasksApi = baseApi.injectEndpoints({
       invalidatesTags: (_res, _err, { todolistId }) => [{ type: "Task", id: todolistId }],
     }),
 
-    updateTask: build.mutation<TaskOperstionResponse, { todolistId: string; taskId: string; model: UpdateTaskModel }>({
+    reorderTask: build.mutation<TaskOperationResponse, { todolistId: string; taskId: string; putAfterItemId: string | null }>({
+      query: ({ todolistId, taskId, putAfterItemId }) => ({
+        url: `/todo-lists/${todolistId}/tasks/${taskId}/reorder`,
+        method: "PUT",
+        body: {putAfterItemId},
+      }),
+    }),
+
+    updateTask: build.mutation<TaskOperationResponse, { todolistId: string; taskId: string; model: UpdateTaskModel }>({
       query: ({ todolistId, taskId, model }) => ({
         url: `/todo-lists/${todolistId}/tasks/${taskId}`,
         method: "PUT",
         body: model,
       }),
-
-
-
-      async onQueryStarted({todolistId, taskId, model}, {dispatch, queryFulfilled, getState}){
+      async onQueryStarted({ todolistId, taskId, model }, { dispatch, queryFulfilled, getState }) {
         const args = tasksApi.util.selectCachedArgsForQuery(getState(), "getTasks")
 
-        const patchResults: {undo: ()=> void}[] = []
-        args.forEach((arg)=>{
+        const patchResults: { undo: () => void }[] = []
+        args.forEach((arg) => {
           patchResults.push(
             dispatch(
               tasksApi.util.updateQueryData("getTasks", { todolistId, params: { page: arg.params.page } }, (state) => {
@@ -45,10 +51,10 @@ export const tasksApi = baseApi.injectEndpoints({
             ),
           )
         })
-        try{
+        try {
           await queryFulfilled
-        }catch{
-          patchResults.forEach((patchResult)=>{
+        } catch {
+          patchResults.forEach((patchResult) => {
             patchResult.undo()
           })
         }
@@ -57,7 +63,7 @@ export const tasksApi = baseApi.injectEndpoints({
       invalidatesTags: (_res, _err, { todolistId }) => [{ type: "Task", id: todolistId }],
     }),
 
-    createTask: build.mutation<TaskOperstionResponse, { todolistId: string; title: string }>({
+    createTask: build.mutation<TaskOperationResponse, { todolistId: string; title: string }>({
       query: ({ todolistId, title }) => ({
         url: `/todo-lists/${todolistId}/tasks`,
         method: "POST",
@@ -67,4 +73,4 @@ export const tasksApi = baseApi.injectEndpoints({
     }),
   }),
 })
-export const { useGetTasksQuery, useCreateTaskMutation, useUpdateTaskMutation, useRemoveTaskMutation } = tasksApi
+export const { useGetTasksQuery, useCreateTaskMutation, useUpdateTaskMutation, useRemoveTaskMutation, useReorderTaskMutation } = tasksApi

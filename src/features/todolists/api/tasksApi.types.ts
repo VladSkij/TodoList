@@ -32,7 +32,7 @@ export const taskOperationResponseSchema = baseResponseSchema(
   })
 )
 
-export type TaskOperstionResponse = z.infer<typeof taskOperationResponseSchema>
+export type TaskOperationResponse = z.infer<typeof taskOperationResponseSchema>
 
 export type UpdateTaskModel = {
   description: string | null
