@@ -8,12 +8,13 @@ import { TaskStatus } from "@/common/enums"
 import { ChangeEvent } from "react"
 import type { DomainTask, UpdateTaskModel } from "@/features/todolists/api/tasksApi.types.ts"
 import { useRemoveTaskMutation, useUpdateTaskMutation } from "@/features/todolists/api/tasksApi.ts"
-import { useDraggable } from "@dnd-kit/react"
+import { useSortable } from "@dnd-kit/react/sortable"
 
 type Props = {
   task: DomainTask
   todolistId: string
   disabled?: boolean
+  index: number
 }
 
 const updateTaskModel = (task: DomainTask, patch: Partial<UpdateTaskModel>): UpdateTaskModel => ({
@@ -26,10 +27,10 @@ const updateTaskModel = (task: DomainTask, patch: Partial<UpdateTaskModel>): Upd
   ...patch,
 })
 
-export const TaskItem = ({ task, todolistId, disabled }: Props) => {
+export const TaskItem = ({ task, todolistId, disabled, index }: Props) => {
   const [updateTask] = useUpdateTaskMutation()
   const [deleteTask] = useRemoveTaskMutation()
-  const {ref} = useDraggable({id: task.id})
+  const { ref } = useSortable({ id:task.id, index })
 
   const deleteTaskHandler = () => {
     deleteTask({ todolistId, taskId: task.id })
@@ -47,7 +48,7 @@ export const TaskItem = ({ task, todolistId, disabled }: Props) => {
   const checked = task.status === TaskStatus.Completed
 
   return (
-    <ListItem ref = {ref} sx={getListItemSx(checked)}>
+    <ListItem ref = {ref} sx={getListItemSx(checked)} >
       <div>
         <Checkbox checked={checked} onChange={changeTaskStatusHandler} disabled={disabled} />
         <EditableSpan value={task.title} onChange={changeTaskTitleHandler} disabled={disabled} />
