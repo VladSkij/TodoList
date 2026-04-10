@@ -30,6 +30,7 @@ const updateTaskModel = (task: DomainTask, patch: Partial<UpdateTaskModel>): Upd
 export const TaskItem = ({ task, todolistId, disabled, index }: Props) => {
   const [updateTask] = useUpdateTaskMutation()
   const [deleteTask] = useRemoveTaskMutation()
+
   const { ref } = useSortable({ id:task.id, index })
 
   const deleteTaskHandler = () => {

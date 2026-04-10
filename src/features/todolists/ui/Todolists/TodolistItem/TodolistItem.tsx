@@ -15,19 +15,21 @@ export const TodolistItem = ({ todolist }: Props) => {
   const createTaskHandler = (title: string) => {
     createTask({ todolistId: todolist.id, title })
   }
+  // const handleDragEnd = ({operation}:{operation:any})=>{
+  //   if(operation){
+  //     console.log(`from ${operation.source.initialIndex} to ${operation.source.index}`)
+  //   }
+  // }
 
   return (
     <div>
       <TodolistTitle todolist={todolist} />
       <CreateItemForm onCreateItem={createTaskHandler} />
-      <DragDropProvider
-        onDragEnd={(event) => {
-          if (event.canceled) return
-          const {target, source} = event.operation
-        }}
-      >
+      {/*<DragDropProvider*/}
+      {/*  onDragEnd={handleDragEnd}*/}
+      {/*>*/}
         <Tasks todolist={todolist} />
-      </DragDropProvider>
+      {/*</DragDropProvider>*/}
       <FilterButtons todolist={todolist} />
     </div>
   )
