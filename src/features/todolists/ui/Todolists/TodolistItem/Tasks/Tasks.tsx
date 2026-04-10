@@ -8,6 +8,7 @@ import { useState } from "react"
 import {
   TasksPagination
 } from "@/features/todolists/ui/Todolists/TodolistItem/Tasks/TasksPagination/TasksPagination.tsx"
+import { useDroppable } from "@dnd-kit/react"
 
 type Props = {
   todolist: DomainTodolist
@@ -15,13 +16,13 @@ type Props = {
 
 export const Tasks = ({ todolist }: Props) => {
   const { id, filter } = todolist
-
   const [page, setPage] = useState(1)
-
   const { data, isLoading } = useGetTasksQuery({
     todolistId: id,
     params: { page },
   })
+
+  const {ref} = useDroppable({id})
 
   let todolistTasks = data?.items
   let filteredTasks = todolistTasks
@@ -37,12 +38,12 @@ export const Tasks = ({ todolist }: Props) => {
     return <TasksSkeleton />
   }
   return (
-    <>
+    <div ref={ref}>
       {filteredTasks?.length === 0 ? (
         <p>Тасок нет</p>
       ) : (
         <>
-          <List>
+          <List >
             {filteredTasks?.map((task) => (
               <TaskItem key={task.id} task={task} todolistId={id}/>
             ))}
@@ -50,6 +51,6 @@ export const Tasks = ({ todolist }: Props) => {
             <TasksPagination totalCount={data?.totalCount || 0} page={page} setPage={setPage} />
         </>
       )}
-    </>
+    </div>
   )
 }
