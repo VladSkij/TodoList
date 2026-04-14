@@ -4,7 +4,6 @@ import { TodolistTitle } from "./TodolistTitle/TodolistTitle"
 import { CreateItemForm } from "@/common/components/CreateItemForm/CreateItemForm"
 import { useCreateTaskMutation } from "@/features/todolists/api/tasksApi.ts"
 import { DomainTodolist } from "@/features/todolists/ui/Todolists/lib/types"
-import { DragDropProvider } from "@dnd-kit/react"
 
 type Props = {
   todolist: DomainTodolist

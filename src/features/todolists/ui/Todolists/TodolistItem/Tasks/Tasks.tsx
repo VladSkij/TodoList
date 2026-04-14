@@ -1,7 +1,7 @@
 import { TaskItem } from "./TaskItem/TaskItem"
 import List from "@mui/material/List"
 import { TaskStatus } from "@/common/enums"
-import { useGetTasksQuery } from "@/features/todolists/api/tasksApi.ts"
+import { useGetTasksQuery, useReorderTaskMutation } from "@/features/todolists/api/tasksApi.ts"
 import { TasksSkeleton } from "@/features/todolists/ui/Todolists/TodolistItem/Tasks/TasksSkeleton/TasksSkeleton.tsx"
 import { DomainTodolist } from "@/features/todolists/ui/Todolists/lib/types"
 import { useState } from "react"
@@ -10,9 +10,11 @@ import {
 } from "@/features/todolists/ui/Todolists/TodolistItem/Tasks/TasksPagination/TasksPagination.tsx"
 import { DragDropProvider } from "@dnd-kit/react"
 
+
 type Props = {
   todolist: DomainTodolist
 }
+
 
 export const Tasks = ({ todolist }: Props) => {
   const { id, filter } = todolist
@@ -21,9 +23,9 @@ export const Tasks = ({ todolist }: Props) => {
     todolistId: id,
     params: { page },
   })
+  const [reorderTask] = useReorderTaskMutation()
 
   const handleDragEnd = ({ operation }: { operation: any }) => {
-    if (operation) {
       console.log(`from ${operation.source.initialIndex} to ${operation.source.index}`)
       const initialIndex = operation.source.initialIndex
       const index = operation.source.index
@@ -33,15 +35,14 @@ export const Tasks = ({ todolist }: Props) => {
           const [item] = copy.splice(initialIndex, 1)
           copy.splice(index, 0, item)
           console.log(copy[index])
-           const movedTask = copy[index]
-          const previousTask = copy.indexOf(copy[index])=== 0 ? null : copy[index - 1]
+          const movedTask = copy[index]
+          const previousTask = index === 0 ? null : copy[index - 1]
+            reorderTask({ todolistId: id, taskId: movedTask.id, putAfterItemId: previousTask ? previousTask.id : null })
         }
         else{
           return
         }
       }
-
-    }
   }
 
   let todolistTasks = data?.items
