@@ -18,6 +18,9 @@ import { ResaultCode } from "@/common/enums"
 import { AUTH_TOKEN, EMAIL } from "@/common/constants"
 import { useGetCaptchaQuery } from "@/features/auth/api/captchaApi.ts"
 import { useState } from "react"
+import { FormHelperText, InputAdornment, InputLabel, OutlinedInput } from "@mui/material"
+import IconButton from "@mui/material/IconButton"
+import { Visibility, VisibilityOff } from "@mui/icons-material"
 
 
 export const Login = () => {
@@ -64,6 +67,16 @@ export const Login = () => {
     reset()
   }
 
+  const [showPassword, setShowPassword] = useState(false)
+  const handleClickShowPassword = () => setShowPassword((show)=> !show)
+  const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+  }
+
+  const handleMouseUpPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault()
+  }
+
   return (
     <Grid container justifyContent={"center"}>
       <FormControl>
@@ -102,21 +115,72 @@ export const Login = () => {
                 />
               )}
             />
+
+            {/*<FormControl>*/}
+            {/*  <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>*/}
+            {/*  <OutlinedInput*/}
+            {/*    id="outlined-adornment-password"*/}
+            {/*    type={showPassword ? "text" : "password"}*/}
+            {/*    endAdornment={*/}
+            {/*      <InputAdornment position="end">*/}
+            {/*        <IconButton*/}
+            {/*          aria-label={showPassword ? "hide the password" : "display the password"}*/}
+            {/*          onClick={handleClickShowPassword}*/}
+            {/*          onMouseDown={handleMouseDownPassword}*/}
+            {/*          onMouseUp={handleMouseUpPassword}*/}
+            {/*          edge="end"*/}
+            {/*        >*/}
+            {/*          {showPassword ? <VisibilityOff /> : <Visibility />}*/}
+            {/*        </IconButton>*/}
+            {/*      </InputAdornment>*/}
+            {/*    }*/}
+            {/*    label="Password"*/}
+            {/*  />*/}
+            {/*</FormControl>*/}
+
             <Controller
               name="password"
               control={control}
               render={({ field }) => (
-                <TextField
-                  type="password"
-                  helperText={errors.password && errors.password.message}
-                  label="Password"
-                  margin="normal"
-                  error={!!errors.password}
-                  {...field}
-                />
+                <FormControl error={!!errors.password}>
+                  <InputLabel htmlFor="password">Password</InputLabel>
+                  <OutlinedInput
+                    {...field}
+                    id="password"
+                    type={showPassword ? "text" : "password"}
+                    endAdornment={
+                      <InputAdornment position="end">
+                        <IconButton
+                          onClick={handleClickShowPassword}
+                          onMouseDown={handleMouseDownPassword}
+                          onMouseUp={handleMouseUpPassword}
+                          edge="end"
+                        >
+                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                        </IconButton>
+                      </InputAdornment>
+                    }
+                    label="Password"
+                  />
+                  {errors.password && <FormHelperText>{errors.password.message}</FormHelperText>}
+                </FormControl>
               )}
             />
 
+            {/*<Controller*/}
+            {/*  name="password"*/}
+            {/*  control={control}*/}
+            {/*  render={({ field }) => (*/}
+            {/*    <TextField*/}
+            {/*      type="password"*/}
+            {/*      helperText={errors.password && errors.password.message}*/}
+            {/*      label="Password"*/}
+            {/*      margin="normal"*/}
+            {/*      error={!!errors.password}*/}
+            {/*      {...field}*/}
+            {/*    />*/}
+            {/*  )}*/}
+            {/*/>*/}
             {isCaptchaRequired && (
               <>
                 <img src={captchaData?.url} />

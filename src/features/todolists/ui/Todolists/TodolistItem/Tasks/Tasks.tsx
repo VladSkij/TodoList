@@ -26,7 +26,6 @@ export const Tasks = ({ todolist }: Props) => {
   const [reorderTask] = useReorderTaskMutation()
 
   const handleDragEnd = ({ operation }: { operation: any }) => {
-      console.log(`from ${operation.source.initialIndex} to ${operation.source.index}`)
       const initialIndex = operation.source.initialIndex
       const index = operation.source.index
       if(initialIndex  !== index){
