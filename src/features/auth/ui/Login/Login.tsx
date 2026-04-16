@@ -14,7 +14,7 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { loginSchema } from "@/features/auth/lib/schemas"
 import { LoginInputs } from "@/features/auth/lib/schemas/LoginSchema.ts"
 import { useLoginMutation } from "@/features/auth/api/authApi.ts"
-import { ResaultCode } from "@/common/enums"
+import { ResultCode } from "@/common/enums"
 import { AUTH_TOKEN, EMAIL } from "@/common/constants"
 import { useGetCaptchaQuery } from "@/features/auth/api/captchaApi.ts"
 import { useState } from "react"
@@ -55,12 +55,12 @@ export const Login = () => {
     login(data)
       .unwrap()
       .then((res) => {
-      if (res.resultCode === ResaultCode.Success) {
+      if (res.resultCode === ResultCode.Success) {
         dispatch(setIsLoggedInAC({ isLoggedIn: true }))
         localStorage.setItem(AUTH_TOKEN, res.data.token)
         localStorage.setItem(EMAIL, data.email)
       }
-      if (res.resultCode === ResaultCode.CaptchaError) {
+      if (res.resultCode === ResultCode.CaptchaError) {
         setCaptchaRequired(true)
       }
     })
@@ -116,28 +116,6 @@ export const Login = () => {
               )}
             />
 
-            {/*<FormControl>*/}
-            {/*  <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>*/}
-            {/*  <OutlinedInput*/}
-            {/*    id="outlined-adornment-password"*/}
-            {/*    type={showPassword ? "text" : "password"}*/}
-            {/*    endAdornment={*/}
-            {/*      <InputAdornment position="end">*/}
-            {/*        <IconButton*/}
-            {/*          aria-label={showPassword ? "hide the password" : "display the password"}*/}
-            {/*          onClick={handleClickShowPassword}*/}
-            {/*          onMouseDown={handleMouseDownPassword}*/}
-            {/*          onMouseUp={handleMouseUpPassword}*/}
-            {/*          edge="end"*/}
-            {/*        >*/}
-            {/*          {showPassword ? <VisibilityOff /> : <Visibility />}*/}
-            {/*        </IconButton>*/}
-            {/*      </InputAdornment>*/}
-            {/*    }*/}
-            {/*    label="Password"*/}
-            {/*  />*/}
-            {/*</FormControl>*/}
-
             <Controller
               name="password"
               control={control}
@@ -167,23 +145,9 @@ export const Login = () => {
               )}
             />
 
-            {/*<Controller*/}
-            {/*  name="password"*/}
-            {/*  control={control}*/}
-            {/*  render={({ field }) => (*/}
-            {/*    <TextField*/}
-            {/*      type="password"*/}
-            {/*      helperText={errors.password && errors.password.message}*/}
-            {/*      label="Password"*/}
-            {/*      margin="normal"*/}
-            {/*      error={!!errors.password}*/}
-            {/*      {...field}*/}
-            {/*    />*/}
-            {/*  )}*/}
-            {/*/>*/}
             {isCaptchaRequired && (
               <>
-                <img src={captchaData?.url} />
+                <img alt="Captcha image" src={captchaData?.url} />
                 <Controller name="captcha" control={control} render={({ field }) => <TextField {...field} />} />
               </>
             )}

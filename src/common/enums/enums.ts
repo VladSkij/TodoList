@@ -13,7 +13,7 @@ export enum TaskPriority {
   Later = 4,
 }
 
-export enum ResaultCode {
+export enum ResultCode {
   Success = 0,
   Error = 1,
   CaptchaError = 10,

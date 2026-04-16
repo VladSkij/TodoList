@@ -10,7 +10,7 @@ import { useEffect, useState } from "react"
 import { CircularProgress } from "@mui/material"
 import s from "./App.module.css"
 import { useMeQuery } from "@/features/auth/api/authApi.ts"
-import { ResaultCode } from "@/common/enums"
+import { ResultCode } from "@/common/enums"
 
 export const App = () => {
   const themeMode = useAppSelector(selectThemeMode)
@@ -21,7 +21,7 @@ export const App = () => {
 
   useEffect(() => {
     if (isLoading) return
-    if (data?.resultCode === ResaultCode.Success) {
+    if (data?.resultCode === ResultCode.Success) {
       dispatch(setIsLoggedInAC({ isLoggedIn: true }))
     }
     setIsInit(true)

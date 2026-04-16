@@ -20,7 +20,7 @@ import { LinearProgress } from "@mui/material"
 import { NavLink } from "react-router"
 import { Path } from "@/common/routing/Routing.tsx"
 import { useLogoutMutation } from "@/features/auth/api/authApi.ts"
-import { ResaultCode } from "@/common/enums"
+import { ResultCode } from "@/common/enums"
 import { AUTH_TOKEN, EMAIL } from "@/common/constants"
 import { baseApi } from "@/app/baseApi.ts"
 
@@ -42,7 +42,7 @@ export const Header = () => {
     logout()
       .unwrap()
       .then((res) => {
-        if (res.resultCode === ResaultCode.Success) {
+        if (res.resultCode === ResultCode.Success) {
           dispatch(setIsLoggedInAC({ isLoggedIn: false }))
           localStorage.removeItem(AUTH_TOKEN)
           localStorage.removeItem(EMAIL)

@@ -1,5 +1,5 @@
 import { z } from "zod"
-import { ResaultCode } from "@/common/enums"
+import { ResultCode } from "@/common/enums"
 
 
 export const fieldErrorSchema = z.object({
@@ -12,7 +12,7 @@ type FieldError = z.infer<typeof fieldErrorSchema>
 export const baseResponseSchema = <T extends z.ZodTypeAny>(schema: T) =>
   z.object({
     data: schema,
-    resultCode: z.enum(ResaultCode),
+    resultCode: z.enum(ResultCode),
     messages: z.string().array(),
     fieldsErrors: fieldErrorSchema.array(),
   })
@@ -24,8 +24,3 @@ export type BaseResponse<T = {}> = {
   fieldsErrors: FieldError[]
 }
 
-export const defaultResponseSchema = baseResponseSchema(z.object({
-
-}))
-
-export type DeafultResponse = z.infer<typeof defaultResponseSchema>
